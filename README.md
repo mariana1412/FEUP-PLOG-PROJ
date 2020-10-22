@@ -1,1 +1,1 @@
-# FEUP-PLOG-PROJ
+# FEUP - Programação em Lógica -> Projeto
