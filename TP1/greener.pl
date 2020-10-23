@@ -21,21 +21,23 @@ board([
 
 printLetter(N):- letter(N, Letter), write(' '), write(Letter), write(' |').
 
-printCell([Color, Points]):- code(Color, Character), write(Character), write(Points), write(' |').
+printPoints(0, _Points):- write('  |').
+printPoints(Color, Points):- Color\=0, write(Points), write(' |').
+
+printCell([Color, Points]):- code(Color, Character), write(Character), printPoints(Color, Points).
 
 printLine([]).
 printLine([Cell | Line]):- printCell(Cell), printLine(Line).
 
-%o tabuleiro vai ser de tamanho NxN
-printBoard(X, N):- printHeader(N), printTab(X, N).
-
-printHeader(N):-
-    N = 6,
-    nl,
-    write('   | 0 | 1 | 2 | 3 | 4 | 5 |\n').
-
 printTab([], 0):- write('---|---|---|---|---|---|---|'), nl.
 printTab([Line|B], N):- write('---|---|---|---|---|---|---|'), nl, printLetter(N), printLine(Line), nl, N1 is N-1, printTab(B, N1).
+
+%o tabuleiro vai ser de tamanho NxN
+printBoard(X, N):- printHeader, printTab(X, N).
+
+printHeader:-
+    nl,
+    write('   | 0 | 1 | 2 | 3 | 4 | 5 |\n').
 
 
 
