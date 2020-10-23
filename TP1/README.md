@@ -9,9 +9,9 @@
 
 ----
 
-## Greener
+## [Greener](https://www.boardgamegeek.com/boardgame/226081/greener)
 
-### [Description] (https://www.boardgamegeek.com/boardgame/226081/greener)
+### Description
 
 **Greener** is one of the three games of the **GreenGreenerGreenest** set. It is a capturing game for 2 players, where both aim to capture the same color, green.
 Depending on the set, there should be:
@@ -31,5 +31,6 @@ Players **alternate** turns during the game, moving zero or one piece at a time 
 
 The **game ends** when all players pass in succession. The player with the **most green pyramids** captured (being part of stacks they control) wins the game. In case of a **tie**, the player with the **highest stack** wins. If the tie persists, **play again**.
 
----
+[Rules Book](https://nestorgames.com/rulebooks/GREENGREENERGREENEST_EN.pdf)
 
+---
