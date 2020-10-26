@@ -1,43 +1,47 @@
-letter(6, 'A').
-letter(5, 'B').
-letter(4, 'C').
-letter(3, 'D').
-letter(2, 'E').
-letter(1, 'F').
+:-use_module(library(lists)).
+:-include('display.pl').
+:-include('utils.pl').
 
-code(0, ' ').
-code(1, 'G').
-code(2, 'B').
-code(3, 'W').
+changePlayer(X, Y) :- Y is 1-X.
 
-board([
-[[1, 0], [2, 0], [1, 0], [2, 0], [1, 0], [2, 0]],
-[[1, 0], [2, 0], [1, 0], [2, 0], [1, 0], [2, 0]],
-[[1, 0], [2, 0], [1, 0], [3, 0], [1, 0], [2, 0]],
-[[0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1]],
-[[3, 1], [0, 1], [3, 1], [1, 1], [0, 1], [3, 1]],
-[[0, 1], [0, 1], [2, 1], [3, 1], [0, 1], [0, 1]]
-]).
+display_game(GameState, Player) :- printBoard(GameState, 6, Player, 5, 3).
 
-printLetter(N):- letter(N, Letter), write(' '), write(Letter), write(' |').
+play :- initial(X), changePlayer(1, P), display_game(X, P).
 
-printPoints(0, _Points):- write('  |').
-printPoints(Color, Points):- Color\=0, write(Points), write(' |').
+%letter(1, 'A').
+%letter(2, 'B').
+%letter(3, 'C').
+%letter(4, 'D').
+%letter(5, 'E').
+%letter(6, 'F').
 
-printCell([Color, Points]):- code(Color, Character), write(Character), printPoints(Color, Points).
+%display_game(+GameState, +Player) :- printBoard(GameState, 6, Player), nextMove(Player, GameState, NewState), changePlayer(Player, NewPlayer), display_game(NewState, NewPlayer).
 
-printLine([]).
-printLine([Cell | Line]):- printCell(Cell), printLine(Line).
+%getCell(Column, Row) :- write('Column: '), get_char(C), nl, write('Row: '), get_char(Row), letter(Collumn, C).
 
-printTab([], 0):- write('---|---|---|---|---|---|---|'), nl.
-printTab([Line|B], N):- write('---|---|---|---|---|---|---|'), nl, printLetter(N), printLine(Line), nl, N1 is N-1, printTab(B, N1).
+%getStart(Column, Row) :- write('Which piece are you gonna move?'), nl, getCell(Column, Row).
 
-%o tabuleiro vai ser de tamanho NxN
-printBoard(X, N):- printHeader, printTab(X, N).
+%getEnd(Column, Row) :- write('Where are you moving it to?'), nl, getCell(Column, Row).
 
-printHeader:-
-    nl,
-    write('   | 0 | 1 | 2 | 3 | 4 | 5 |\n').
+%getMove(ColumnS, RowS, ColumnE, RowE) :- getStart(ColumnS, RowS), nl, getEnd(ColumnE, RowE)).
 
+%accessCell([], C, R, N).
+%accessCell([H | T], C, R, N).
+
+%accessLine([], C, R, N).
+%accessLine([H|T], 0, R, N) :- accessCell(H).
+%accessLine([H | T], C, R, N) :- accessCell(H), C\= 0, C1 is C-1, accessLine(T, C1, R, N).
+
+%predicateRemove(GameState, Column, Row, Color, Points, Stack, NewState) :- accessCell(GameState, Column, Row, Cell), Cell is [0, 0, 0].
+
+%predicateAdd(GameState, Column, Row, Color, Points, Stack).
+
+%nextMove(currentPlayer, GameState, NewState) :- getMove(ColumnS, RowS, ColumnE, RowE), 
 
 
+
+%ola(...):- N=row1, modifyRow(State, NewState), 
+%ola(row1, row2, col1, col2, [],  N):- N\=row1, N\=row2, append(State, NewState, X), ola(); 
+
+% !!!!!!!! TO DO: predicado de dar append e modificar celula;
+% !!!!!!!! TO DO: predicado de aceder a celula e guardar uma lista; 

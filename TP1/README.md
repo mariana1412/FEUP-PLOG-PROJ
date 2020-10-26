@@ -1,6 +1,6 @@
-# PLOG 2020/2021 
+# PLOG 2020/2021  
 
-## Group 
+## Group  
 
 | Name             | Number    | E-Mail             |
 | ---------------- | --------- | ------------------ |
@@ -19,7 +19,7 @@ Depending on the set, there should be:
 * Basic: a 6×6 board, 15 black pyramids, 20 green pyramids, 15 white pyramids.
 * Advanced: a 6×9 – 9×9 board (using one or both pads), 30 black pyramids, 45 green pyramids, 30 white pyramids.
 
-### Setup 
+### Setup  
 
 First of all, it is necessary to calculate the **number of pieces** of each color: the number of black and white pyramids must be between a quarter and a third of the board cells and there must be _at least_ as many green pyramids as black/white pieces.  For example, it is recommended to use 9 black, 9 white and 18 green pieces on a 6×6 board.
 
@@ -33,4 +33,5 @@ The **game ends** when all players pass in succession. The player with the **mos
 
 [Rules Book](https://nestorgames.com/rulebooks/GREENGREENERGREENEST_EN.pdf)
 
----
+----
+
