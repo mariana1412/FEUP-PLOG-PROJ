@@ -13,3 +13,5 @@ updateColumn([_H|T], 0, Cell, [Cell|T]).
 updateColumn([H|T], Col, Cell, [H|NT]) :- 
     Col1 is (Col-1),
     updateColumn(T, Col1, Cell, NT).
+
+isEmpty([0, _, _]).
