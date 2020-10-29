@@ -65,7 +65,7 @@ printInfo(_N, _Player).
 printPlayersPoints([[0, BlackPoints], [1, WhitePoints]]):- printBlackPoints(BlackPoints), printWhitePoints(WhitePoints).
 printPlayersPoints([[1, WhitePoints], [0, BlackPoints]]):- printBlackPoints(BlackPoints), printWhitePoints(WhitePoints).
 
-printBlackPoints(1):- write('\n  Black: 1 point\n').
+printBlackPoints(1):- write('\n\n  Black: 1 point\n').
 printBlackPoints(Points):- write('\n  Black: '), write(Points), write(' points\n').
 
 printWhitePoints(1):- write('  White: 1 point\n\n').

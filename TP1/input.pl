@@ -30,7 +30,7 @@ readEnd(Cell, Column, Row, GameState):-
         validateEnd(Cell).
 
 readMove(Player, GameState, StartCell, StartColumn, StartRow, EndCell, EndColumn, EndRow):-
-        readStart(StartC, StartCol, StartR, Player, GameState), !,
+        nl, readStart(StartC, StartCol, StartR, Player, GameState), !,
         (
             (   
                 readEnd(EndC, EndCol, EndR, GameState), !,

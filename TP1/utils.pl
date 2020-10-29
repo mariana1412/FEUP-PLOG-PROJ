@@ -33,7 +33,5 @@ updatePoints([[Color, Points], Player], _, [1, 1|_], [[Color, NP], Player]):- NP
 updatePoints([[Color, Points], [Color1, Points1]], [X|_], [Y, Add|_], [[Color, NP], [Color1, NP1]]):-
             X\=Y, Y\=1,
             NP is (Points + Add),
-            write('------------- NP = '), write(NP), write('\t'), write(Points), write('+'), write(Add), nl,
-            NP1 is (Points1 - Add),
-            write('------------- NP1 = '), write(NP1), write('\t'), write(Points1), write('-'), write(Add), nl.
+            NP1 is (Points1 - Add).
         
