@@ -39,17 +39,17 @@ printLine([Cell | Line]):- printCell(Cell), printLine(Line).
 printSeparator(1):- write('|-----|-----|-----|-----|-----|-----|-----|'), nl, printSeparator(2).
 printSeparator(2):- write('|     |     |     |     |     |     |     |'), nl.
 
-printTab([], 0, _Player, _PointsBlack, _PointsWhite):- write('|-----|-----|-----|-----|-----|-----|-----|'), nl.
-printTab([Line|B], N, Player, PointsBlack, PointsWhite):- 
+printTab([], 0, _Player):- write('|-----|-----|-----|-----|-----|-----|-----|'), nl.
+printTab([Line|B], N, Player):- 
         printSeparator(1),
         printNumber(N),
         printLine(Line),
-        printInfo(N, Player, PointsBlack, PointsWhite), nl,
+        printInfo(N, Player), nl,
         printSeparator(2),
-        N1 is N-1, printTab(B, N1, Player, PointsBlack, PointsWhite).
+        N1 is N-1, printTab(B, N1, Player).
 
 %o tabuleiro vai ser de tamanho NxN
-printBoard(X, N, Player, PointsBlack, PointsWhite):- printHeader, printTab(X, N, Player, PointsBlack, PointsWhite).
+printBoard(X, N, Player):- printHeader, printTab(X, N, Player).
 
 printHeader:-
     nl,
@@ -58,10 +58,15 @@ printHeader:-
     write('Cell Format: Color/Points/StackHeight\n'),
     printSeparator(2).
 
-printInfo(6, 0, _PointsBlack, _PointsWhite):- write(' It is black\'s turn!').
-printInfo(6, 1, _PointsBlack, _PointsWhite):- write(' It is white\'s turn!').
-printInfo(4, _Player, PointsBlack, _PointsWhite):- write(' Black has '), write(PointsBlack), write(' points.').
-printInfo(3, _Player, _PointsBlack, PointsWhite):- write(' White has '), write(PointsWhite), write(' points.').
-printInfo(_N, _Player, _PointsBlack, _PointsWhite).
+printInfo(6, 0):- write(' It is black\'s turn!').
+printInfo(6, 1):- write(' It is white\'s turn!').
+printInfo(_N, _Player).
 
+printPlayersPoints([[0, BlackPoints], [1, WhitePoints]]):- printBlackPoints(BlackPoints), printWhitePoints(WhitePoints).
+printPlayersPoints([[1, WhitePoints], [0, BlackPoints]]):- printBlackPoints(BlackPoints), printWhitePoints(WhitePoints).
 
+printBlackPoints(1):- write('\n  Black: 1 point\n').
+printBlackPoints(Points):- write('\n  Black: '), write(Points), write(' points\n').
+
+printWhitePoints(1):- write('  White: 1 point\n\n').
+printWhitePoints(Points):- write('  White: '), write(Points), write(' points\n\n').
