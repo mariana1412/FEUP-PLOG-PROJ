@@ -3,20 +3,21 @@ display_game(GameState, Player) :-
         Player = [[Color|_]|_],
         printBoard(GameState, 6, Color).
 
+%Game cycle until there is no possible move
 gameLoop(GameState, Player):-
         nextMove(GameState, Player, NewPlayer, NewState), 
         (       
                 (       
-                        C\=C
-                       %finishGame(GameState, Player).
-                       %aqui vai se verificar se há mais jogadas possiveis -> se não houver, terminar o jogo. se huver, continuar
+                        C\=C %to delete
+                       % TO DO: finishGame(GameState, Player).
                 );
 
                 (
                         gameLoop(NewState, NewPlayer)
                 )
         ).
-        
+
+%Processes a new move, changes player and displays new state and player 
 nextMove(GameState, Player, NewPlayer, NewState):- 
         move(Player, GameState, NewGameState), !,
         nth0(0, NewGameState, NewState),
@@ -24,9 +25,9 @@ nextMove(GameState, Player, NewPlayer, NewState):-
         changePlayer(NewP, NewPlayer),
         display_game(NewState, NewPlayer).        
 
-
-move(Player, GameState, NewGameState) :- %NewGameState é uma lista com [NewGameState, NewPlayer] 
-        %falta verificar se o player tem jogadas possíveis
+%Processes a new move, update points and board
+move(Player, GameState, NewGameState) :- 
+        %it will be checked if the player has possible moves
         (
             (
                 readMove(Player, GameState, StartCell, StartCol, StartRow, EndCell, EndCol, EndRow), !,

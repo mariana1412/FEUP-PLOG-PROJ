@@ -62,7 +62,6 @@ After initializing the game components, the ***play/0*** predicate calls 2  disp
 1. ***printPlayersPoints(Player)***, which takes the Player List and prints what can be seen above the board in the image.
 2. ***display_game(+GameState, +Player)***, which takes the board initialized previously and the Player list.
 
-
 #### **Displaying the board**
 
 The ***display_game(+GameState, +Player)*** calls the ***printBoard(X, N, Player)*** (in [display.pl](display.pl)) which takes the Board (X), the board size (we are using 6x6) and the color of the next player, and calls subsequent recursive predicates in order to produce the result seen in the images. It starts by displaying the header (with an accompanying key, to interpret the board cells), and continues by displaying, line by line, each cell.
