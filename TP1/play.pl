@@ -1,3 +1,4 @@
+%prints the current game state
 display_game(GameState, Player) :- 
         Player = [[Color|_]|_],
         printBoard(GameState, 6, Color).
