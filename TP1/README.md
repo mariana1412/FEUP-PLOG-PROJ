@@ -86,8 +86,8 @@ A middle and final look to the board isn't that much different from the initial 
 
 To play the game:
 
-* Consult **greener.pl** in SICStus Prolog;
-* Type **'play.'** (without the quotation marks) in the console to start the game.
+* consult **greener.pl** in SICStus Prolog;
+* type **'play.'** (without the quotation marks) in the console to start the game.
 
 It has to be inserted:
 
