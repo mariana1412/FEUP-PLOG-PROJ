@@ -41,13 +41,13 @@ The **game ends** when all players pass in succession. The player with the **mos
 
 At any point during the game, it is crucial that both players know these things:
 
-* Whose turn it is;
+* Whose **turn** it is;
 * For each board space:
-    - The color of the piece at the top of the stack;
-    - The amount of points (green pieces in the stack);
-    - The stack height (number of pieces in the stack).
+    - The **color** of the piece at the top of the stack;
+    - The amount of **points** (green pieces in the stack);
+    - The stack **height** (number of pieces in the stack).
 
-We also provided the points both players currently have.
+We also provided the **points** both players currently have.
 
 ### **How we did it**
 
@@ -55,22 +55,22 @@ By calling ***play/0***, an initial board is setup (this board is a valid initia
 
 ![initial Board](images/initial.png)
 
-The ***play/0*** predicate, first of all, calls the ***initial(-GameState)*** predicate, generating the board (a 3d list) that we can see in the image above. Then, it initializes de Player list, composed of 2 sublists, each with the number of player (0 for Black, 1 for White) and the correspondent current points. This list maintains the next Player as its head.
+The ***play/0*** predicate, first of all, calls the ***initial(-GameState)*** predicate, generating the board (a 3d list) that we can see in the image above. Then, it initializes de Player list, composed of two sublists, each with the number of player (**0 for Black**, **1 for White**) and the correspondent current points. This list maintains the next Player as its **head**.
 
-After initializing the game components, the ***play/0*** predicate calls 2  display predicates, before calling the ***gameLoop*** predicate. These predicates are:
+After initializing the game components, the ***play/0*** predicate calls two display predicates, before calling the ***gameLoop*** predicate. These predicates are:
 
 1. ***printPlayersPoints(Player)***, which takes the Player List and prints what can be seen above the board in the image.
 2. ***display_game(+GameState, +Player)***, which takes the board initialized previously and the Player list.
 
 #### **Displaying the board**
 
-The ***display_game(+GameState, +Player)*** calls the ***printBoard(X, N, Player)*** (in [display.pl](display.pl)) which takes the Board (X), the board size (we are using 6x6) and the color of the next player, and calls subsequent recursive predicates in order to produce the result seen in the images. It starts by displaying the header (with an accompanying key, to interpret the board cells), and continues by displaying, line by line, each cell.
+The ***display_game(+GameState, +Player)*** calls the ***printBoard(GameState, N, Player)*** (in [display.pl](display.pl)) which takes the **Board** (GameState), the **board size** (we are using 6x6) and the **color** of the next player, and calls subsequent recursive predicates in order to produce the result seen in the images. It starts by displaying the **header** (with an accompanying key, to interpret the board cells), and continues by displaying, **line by line**, each cell.
 
 The cells contain the information that we enumerated earlier, in order:
 
-- the colour of the top piece (0 for empty, 1 for green, 2 for black and 3 for white). The letter for the colour is obtained from the ***code/2*** predicate.
-- the amount of points;
-- the stack height.
+* the color of the top piece (0 for empty, 1 for green, 2 for black and 3 for white). The letter for the colour is obtained from the ***code/2*** predicate.
+* the amount of points;
+* the stack height.
 
 If we are printing the first board line, we use the ***printInfo/2*** predicate in order to also print the turn information on its side.
 
