@@ -1,6 +1,6 @@
 # PLOG 2020/2021  
 
-## Group  
+## Group T3_Greener2
 
 | Name             | Number    | E-Mail             |
 | ---------------- | --------- | ------------------ |
@@ -80,4 +80,29 @@ A middle and final look to the board isn't that much different from the initial 
 
 ![final](images/final.png)
 
-**NOTE**: At this time, the game doesn't have a game over, it has to be **manually** stopped. Move's validation is not complete.
+----
+
+## How to run the program
+
+To play the game:
+
+* Consult **greener.pl** in SICStus Prolog;
+* Type **'play.'** (without the quotation marks) in the console to start the game.
+
+It has to be inserted:
+
+* a **letter**, if it is a **column** input (for example, type -> 'A', if you want to select column A);
+
+* a **number**, if it is a **row** input (for example, type -> 2, if you want to select the 2nd row).
+
+----
+
+## NOTES
+
+At this point, before playing the game, it is important to know that:
+
+* the game doesn't have a game over, so it has to be **manually** stopped;
+
+* the program doen't work correctly if you press more that one charecter at a time;
+
+* move's validation is **not** complete.
