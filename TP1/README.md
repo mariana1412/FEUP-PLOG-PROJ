@@ -97,7 +97,7 @@ It has to be inserted:
 
 ----
 
-## NOTES
+## Notes
 
 At this point, before playing the game, it is important to know that:
 
