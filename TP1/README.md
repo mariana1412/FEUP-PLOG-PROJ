@@ -79,3 +79,5 @@ A middle and final look to the board isn't that much different from the initial 
 ![mid](images/mid.png)
 
 ![final](images/final.png)
+
+**NOTE**: At this time, the game doesn't have a game over, it has to be **manually** stopped. Move's validation is not complete.
