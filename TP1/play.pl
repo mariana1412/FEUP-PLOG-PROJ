@@ -1,5 +1,7 @@
 %prints the current game state
 display_game(GameState, Player) :- 
+        write('====================================================================\n'),
+        printPlayersPoints(Player),
         Player = [[Color|_]|_],
         printBoard(GameState, 6, Color).
 
@@ -33,11 +35,17 @@ move(Player, GameState, NewGameState) :-
                 readMove(Player, GameState, StartCell, StartCol, StartRow, EndCell, EndCol, EndRow), !,
                 updatePoints(Player, StartCell, EndCell, NewPlayer),
                 updateBoardGame(StartCell, StartCol, StartRow, EndCell, EndCol, EndRow, GameState, NewState),
-                printPlayersPoints(NewPlayer),
                 NewGameState = [NewState, NewPlayer]
             );
             (
                 write('Invalid move. Try again!\n'),
-                move(Player, GameState, NewState)
+                move(Player, GameState, NewGameState)
             )
         ).
+
+valid_moves(GameState, Player, ListOfMoves):-
+        Player = [[Color|_]|_],
+        sizeBoard(GameState, NoCol, NoRow).
+        %availableMoves(GameState, Color, ..., ListOfMoves).
+
+         

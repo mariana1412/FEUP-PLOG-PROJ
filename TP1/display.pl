@@ -22,28 +22,8 @@ initial([
 [[1, 1, 1], [2, 0, 1], [1, 1, 1], [2, 0, 1], [1, 1, 1], [3, 0, 1]]
 ]).
 
-%mid board setup
-mid([
-[[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [2, 1, 2]],
-[[0, 0, 0], [0, 0, 0], [0, 0, 0], [2, 4, 7], [0, 0, 0], [0, 0, 0]],
-[[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [1, 1, 1]],
-[[0, 0, 0], [0, 0, 0], [3, 7, 17], [0, 0, 0], [0, 0, 0], [0, 0, 0]],
-[[0, 0, 0], [1, 1, 1], [0, 0, 0], [0, 0, 0], [1, 1, 1], [3, 0, 1]],
-[[2, 1, 2], [0, 0, 0], [3, 1, 2], [0, 0, 0], [1, 1, 1], [3, 0, 1]]
-]).
-
-%final board setup
-final([
-[[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]],
-[[0, 0, 0], [0, 0, 0], [0, 0, 0], [2, 4, 7], [0, 0, 0], [0, 0, 0]],
-[[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [3, 2, 4]],
-[[0, 0, 0], [0, 0, 0], [3, 7, 17], [0, 0, 0], [0, 0, 0], [0, 0, 0]],
-[[0, 0, 0], [3, 3, 4], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]],
-[[3, 2, 4], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
-]).
-
 %prints the row coordinate
-printNumber(N):- write('|'), number(N, Number), write('  '), write(Number), write('  |').
+printNumber(N):- number(N, Number), write(Number), write('|').
 
 %prints the cell points
 printPoints(0, _Points):- write('    |').
@@ -65,11 +45,11 @@ printLine([]).
 printLine([Cell | Line]):- printCell(Cell), printLine(Line).
 
 %prints a dashed separator
-printSeparator(1):- write('|-----|-----|-----|-----|-----|-----|-----|'), nl, printSeparator(2).
-printSeparator(2):- write('|     |     |     |     |     |     |     |'), nl.
+printSeparator(1):- write(' |-----|-----|-----|-----|-----|-----|'), nl, printSeparator(2).
+printSeparator(2):- write(' |     |     |     |     |     |     |'), nl.
 
 %prints the board, line by line
-printTab([], 0, _Player):- write('|-----|-----|-----|-----|-----|-----|-----|'), nl.
+printTab([], 0, _Player):- write(' |-----|-----|-----|-----|-----|-----|'), nl.
 printTab([Line|B], N, Player):- 
         printSeparator(1),
         printNumber(N),
@@ -83,11 +63,8 @@ printBoard(X, N, Player):- printHeader, printTab(X, N, Player).
 
 %prints the board columns and cell key 
 printHeader:-
-    nl,
-    printSeparator(1),
-    write('|     |  A  |  B  |  C  |  D  |  E  |  F  | '),
-    write('Cell Format: Color/Points/StackHeight\n'),
-    printSeparator(2).
+    write('Cell Format: Color/Points/StackHeight\n\n'),
+    write('    A     B     C     D     E     F    \n').
 
 %prints the player turn on the first line
 printInfo(6, 0):- write(' It is black\'s turn!').

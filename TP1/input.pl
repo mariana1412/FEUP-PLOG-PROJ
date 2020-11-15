@@ -34,19 +34,11 @@ readEnd(Cell, Column, Row, GameState):-
 
 %reads player move making sure it is a possible one
 readMove(Player, GameState, StartCell, StartColumn, StartRow, EndCell, EndColumn, EndRow):-
-        nl, readStart(StartC, StartCol, StartR, Player, GameState), !,
-        (
-            (   
-                readEnd(EndC, EndCol, EndR, GameState), !,
-                validateMove(StartCol, StartR, EndCol, EndR, GameState), !,
-                StartCell=StartC, StartColumn=StartCol, StartRow=StartR,
-                EndCell=EndC, EndColumn=EndCol, EndRow=EndR
-            );
-            (
-                write('Invalid move. Try again!\n'),
-                readMove(Player, StartCell, StartCol, StartRow, EndCell, EndCol, EndRow)
-            )
-        ).
+        nl, readStart(StartC, StartCol, StartR, Player, GameState), !, 
+        readEnd(EndC, EndCol, EndR, GameState), !,
+        validateMove(StartCol, StartR, EndCol, EndR, GameState), !,
+        StartCell=StartC, StartColumn=StartCol, StartRow=StartR,
+        EndCell=EndC, EndColumn=EndCol, EndRow=EndR.
 
 %column must be between A-F
 validateColumn('A', 1).

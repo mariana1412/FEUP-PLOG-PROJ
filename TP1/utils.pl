@@ -3,6 +3,12 @@ getCell(GameState, CellCol, CellRow, Cell):-
         nth1(CellRow, GameState, Row),
         nth1(CellCol, Row, Cell).
 
+%get size of Board
+sizeBoard(GameState, NoCol, NoRow):-
+        length(GameState, NoRow),
+        nth0(0, GameState, Row),
+        length(Row, NoCol).
+
 %creates a new cell according to the move
 updateCell([SC, SP, SS], [_EC, EP, ES], [NC, NP, NS]):-
         NC = SC,
