@@ -8,6 +8,7 @@
 %main function -> it initializes the board and
 play :- initial(GameState),
         Player=[[0, 0], [1, 0]], %the first element represents the next player and the second element of each sublist represents the points
-        display_game(GameState, Player),
-        gameLoop(GameState, Player).
+        display_game(GameState, Player), !,
+        valid_moves(GameState, Player, Moves).
+        %gameLoop(GameState, Player).
 

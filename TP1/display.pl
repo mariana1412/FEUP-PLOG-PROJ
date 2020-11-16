@@ -63,8 +63,8 @@ printBoard(X, N, Player):- printHeader, printTab(X, N, Player).
 
 %prints the board columns and cell key 
 printHeader:-
-    write('Cell Format: Color/Points/StackHeight\n\n'),
-    write('    A     B     C     D     E     F    \n').
+    write('\n    A     B     C     D     E     F    '),
+    write('Cell Format: Color/Points/StackHeight\n').
 
 %prints the player turn on the first line
 printInfo(6, 0):- write(' It is black\'s turn!').

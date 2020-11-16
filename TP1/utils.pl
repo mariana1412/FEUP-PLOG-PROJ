@@ -49,4 +49,4 @@ updatePoints([[Color, Points], [Color1, Points1]], [X|_], [Y, Add|_], [[Color, N
             X\=Y, Y\=1,
             NP is (Points + Add),
             NP1 is (Points1 - Add).
-        
+
