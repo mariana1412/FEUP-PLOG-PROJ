@@ -82,3 +82,11 @@ printBlackPoints(Points):- write('\n  Black: '), write(Points), write(' points\n
 %prints the current white points
 printWhitePoints(1):- write('  White: 1 point\n\n').
 printWhitePoints(Points):- write('  White: '), write(Points), write(' points\n\n').
+
+displayGameOver(0):- write('Black is the winner! Congrats!\n').
+displayGameOver(1):- write('White is the winner! Congrats!\n').
+displayGameOver(2):- write('I\'ts a tie!\n').
+
+displayPointsStack(BlackPoints, BlackHighestStack, WhitePoints, WhiteHighestStack):-
+        write('Black ----> Points = '), write(BlackPoints), write(', Highest Stack: '), write(BlackHighestStack), nl,
+        write('White ----> Points = '), write(WhitePoints), write(', Highest Stack: '), write(WhiteHighestStack), nl.

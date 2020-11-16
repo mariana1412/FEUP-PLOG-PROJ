@@ -6,98 +6,82 @@ display_game(GameState, Player) :-
         printBoard(GameState, 6, Color).
 
 %Game cycle until there is no possible move
+gameLoop(GameState, Player):- isFinished(GameState, Player), !, finishGame(GameState).
 gameLoop(GameState, Player):-
-        nextMove(GameState, Player, NewPlayer, NewState), 
-        (       
-                (       
-                        C\=C %to delete
-                       % TO DO: finishGame(GameState, Player).
-                );
-
-                (
-                        gameLoop(NewState, NewPlayer)
-                )
-        ).
+        nextMove(GameState, Player, NewPlayer, NewState),
+        gameLoop(NewState, NewPlayer).
 
 %Processes a new move, changes player and displays new state and player 
-nextMove(GameState, Player, NewPlayer, NewState):- 
-        move(Player, GameState, NewGameState), !,
+nextMove(GameState, Player, NewPlayer, NewState):-
+        processTurn(Player, GameState, NewGameState), 
         nth0(0, NewGameState, NewState),
         nth0(1, NewGameState, NewP),
         changePlayer(NewP, NewPlayer),
         display_game(NewState, NewPlayer).        
 
+processTurn(Player, GameState, NewGameState):- hasAvailableMoves(GameState, Player), move(Player, GameState, NewGameState).
+processTurn(Player, GameState, [GameState, Player]):- write('\nPlayer does not have available moves! Skipping turn!\n\n').
+
 %Processes a new move, update points and board
-move(Player, GameState, NewGameState) :- 
-        %it will be checked if the player has possible moves
-        (
-            (
-                readMove(Player, GameState, StartCell, StartCol, StartRow, EndCell, EndCol, EndRow), !,
-                updatePoints(Player, StartCell, EndCell, NewPlayer),
-                updateBoardGame(StartCell, StartCol, StartRow, EndCell, EndCol, EndRow, GameState, NewState),
-                NewGameState = [NewState, NewPlayer]
-            );
-            (
-                write('Invalid move. Try again!\n'),
-                move(Player, GameState, NewGameState)
-            )
-        ).
+move(Player, GameState, NewGameState):-
+        readMove(Player, GameState, StartCell, StartCol, StartRow, EndCell, EndCol, EndRow), !,
+        updatePoints(Player, StartCell, EndCell, NewPlayer),
+        updateBoardGame(StartCell, StartCol, StartRow, EndCell, EndCol, EndRow, GameState, NewState),
+        NewGameState = [NewState, NewPlayer].
+
+move(Player, GameState, NewGameState):-
+        write('Invalid move. Try again!\n'),
+        move(Player, GameState, NewGameState).
+
+hasAvailableMoves(GameState, Player):-
+        valid_moves(GameState, Player, ListOfMoves), !,
+        ListOfMoves \= [].
+
+isFinished(GameState, Player):- 
+        Player = [[Color|_]|_], 
+        noPlayerPieces(GameState, Color).
+
+isFinished(GameState, Player):- 
+        changePlayer(Player, NP),
+        NP = [[Color|_]|_], 
+        noPlayerPieces(GameState, Color).
+
+isFinished(GameState, Player):-
+        \+ hasAvailableMoves(GameState, Player),
+        changePlayer(Player, NextPlayer),
+        \+ hasAvailableMoves(GameState, NextPlayer).
+
+finishGame(GameState):-
+        nl, write('================================== GAME OVER ==================================\n'),
+        game_over(GameState, Winner),
+        displayGameOver(Winner).
+
+game_over(GameState, Winner):- 
+        countPointsStack(GameState, BlackPoints, BlackHighestStack, WhitePoints, WhiteHighestStack),
+        displayPointsStack(BlackPoints, BlackHighestStack, WhitePoints, WhiteHighestStack),
+        getWinner(BlackPoints, BlackHighestStack, WhitePoints, WhiteHighestStack, Winner).
+
+getWinner(BlackPoints, _, WhitePoints, _, Winner):- BlackPoints>WhitePoints, Winner = 0.
+getWinner(BlackPoints, _, WhitePoints, _, Winner):- BlackPoints<WhitePoints, Winner = 1.
+getWinner(Points, BlackHighestStack, Points, WhiteHighestStack, Winner):- BlackHighestStack>WhiteHighestStack, Winner = 0.
+getWinner(Points, BlackHighestStack, Points, WhiteHighestStack, Winner):- BlackHighestStack<WhiteHighestStack, Winner = 1.
+getWinner(Points, Stack, Points, Stack, 2).
 
 valid_moves(GameState, Player, ListOfMoves):-
         Player = [[Color|_]|_],
-        write('Player = '), write(Color), nl,
         sizeBoard(GameState, MaxCol, MaxRow),
-        CurrentCol is (MaxCol-1), CurrentRow is (MaxRow-1),
-        availableMoves(GameState, Color, CurrentCol, CurrentRow, MaxCol, MaxRow, ListOfMoves),
-        write('---> '), write(ListOfMoves), write(' <--- \n').
+        availableMoves(GameState, Color, 0, MaxCol, MaxRow, _List, MovesList),
+        append(MovesList, [], ListOfMoves).
 
-availableMoves(_, _, -1, -1, _, _, []).
-availableMoves(_, _, -1, -1, _, _, _).
-availableMoves(GameState, Player, CurrentCol, CurrentRow, MaxCol, MaxRow, ListOfMoves):-
-        write('ROWWWWWWWWWWWW\n'),
-        CC = CurrentCol,
-        CR = CurrentRow,
-        availableRow(GameState, Player, CC, CR, MaxCol, MaxRow, ListOfMoves), !,
-        write('COLLLLLLLLLLLL\n'),
-        availableCol(GameState, Player, CC, CR, MaxCol, MaxRow, ListOfMoves), !,
-        Col is (CurrentCol-1), Row is (CurrentRow-1),
-        availableMoves(GameState, Player, Col, Row, MaxCol, MaxRow, ListOfMoves).
-
-availableRow(_, _, _, -1, _, _, []).
-availableRow(_, _, _, -1, _, _, _).
-availableRow(GameState, Player, CurrentCol, CurrentRow, MaxCol, MaxRow, ListOfMoves):-
-        write('ROW IS '), write(CurrentRow), write('! Col is '), write(CurrentCol), write('! List: '), write(ListOfMoves), nl,
-        availableCell(GameState, Player, CurrentCol, CurrentRow, MaxCol, MaxRow, Moves), !,
-        (
-                (
-                        Moves \= [], !,
-                        append(ListOfMoves, [], M),
-                        append(M, [Moves], NewMoves)
-                );
-                (
-                        NewMoves = ListOfMoves
-                )
-        ),
-        Row is (CurrentRow-1), 
-        availableRow(GameState, Player, CurrentCol, Row, MaxCol, MaxRow, NewMoves).
-
-availableCol(_, _, -1, _, _, _, []).
-availableCol(_, _, -1, _, _, _, _).
-availableCol(GameState, Player, CurrentCol, CurrentRow, MaxCol, MaxRow, ListOfMoves):-
-        write('ROW IS '), write(CurrentRow), write('! Col is '), write(CurrentCol), write('! List: '), write(ListOfMoves), nl,
-        availableCell(GameState, Player, CurrentCol, CurrentRow, MaxCol, MaxRow, Moves), !,
-        (
-                (
-                        Moves \= [], !,
-                        append(ListOfMoves, [], M),
-                        append(M, [Moves], NewMoves)
-                );
-                (
-                        NewMoves = ListOfMoves
-                )
-        ),
-        Col is (CurrentCol-1), 
-        availableCol(GameState, Player, Col, CurrentRow, MaxCol, MaxRow, NewMoves).
+availableMoves(_, _, Index, MaxCol, MaxRow, List, ListMoves):- Index is (MaxCol*MaxRow), ListMoves = List.
+availableMoves(GameState, Player, Index, MaxCol, MaxRow, List, ListMoves):-
+        getColRowbyIndex(Index, CurrentCol, CurrentRow, MaxCol),
+        availableCell(GameState, Player, CurrentCol, CurrentRow, MaxCol, MaxRow, Moves),
+        NextIndex is (Index+1),
+        append(List, [], M),
+        append(M, [Moves], NewMoves),
+        deleteEmptyList(NewMoves, CleanMoves),
+        availableMoves(GameState, Player, NextIndex, MaxCol, MaxRow, CleanMoves, ListMoves).
 
 availableCell(GameState, 1, CurrentCol, CurrentRow, _, _, ListOfMoves):-
         Col is (CurrentCol+1), Row is (CurrentRow+1),
@@ -117,82 +101,40 @@ availableCell(GameState, _, CurrentCol, CurrentRow, MaxCol, MaxRow, ListOfMoves)
         NextRow is (CurrentRow+1), PreviousRow is (CurrentRow-1), NextCol is (CurrentCol+1), PreviousCol is (CurrentCol-1),
         availableRightMove(GameState, CurrentCol, NextRow, MaxRow, MoveRight),
         availableLeftMove(GameState, CurrentCol, PreviousRow, MoveLeft),
-        availableUpMove(GameState, PreviousCol, CurrentRow, MoveUp),
         availableDownMove(GameState, NextCol, CurrentRow, MaxCol, MoveDown),
-        append([], MoveRight, Final1),
-        append(Final1, MoveLeft, Final2),
-        append(Final2, MoveUp, Final3),
-        append(Final3, MoveDown, Final4),
-        append([[CurrentCol, CurrentRow]], Final4, ListOfMoves).
+        availableUpMove(GameState, PreviousCol, CurrentRow, MoveUp),
+        append4Lists(MoveRight, MoveLeft, MoveUp, MoveDown, Final),
+        deleteEmptyList(Final, CleanFinal),
+        addMove(CleanFinal, ListOfMoves, CurrentCol, CurrentRow).
 
 availableRightMove(_, _, Row, Row, []).
 availableRightMove(_, _, Row, Row, _).
 availableRightMove(GameState, CurrentCol, CurrentRow, MaxRow, MoveRight):-
         ColAux is (CurrentCol+1), RowAux is (CurrentRow+1),
         getCell(GameState, ColAux, RowAux, Cell), !,
-        (
-                (
-                        isEmpty(Cell),
-                        Row is (CurrentRow+1),
-                        availableRightMove(GameState, CurrentCol, Row, MaxRow, MoveRight)
-                );
-                (
-                        NewMove = [[CurrentCol, CurrentRow]],
-                        append([], NewMove, MoveRight),
-                        availableRightMove(GameState, CurrentCol, MaxRow, MaxRow, MoveRight)
-                )
-        ).
+        checkRightCell(Cell, MaxRow, Row, CurrentRow, CurrentCol, MoveRight),
+        availableRightMove(GameState, CurrentCol, Row, MaxRow, MoveRight).
 
 availableLeftMove(_, _, -1, []).
 availableLeftMove(_, _, -1, _).
 availableLeftMove(GameState, CurrentCol, CurrentRow, MoveLeft):-
         ColAux is (CurrentCol+1), RowAux is (CurrentRow+1),
         getCell(GameState, ColAux, RowAux, Cell), !,
-        (
-                (
-                        isEmpty(Cell),
-                        Row is (CurrentRow-1),
-                        availableLeftMove(GameState, CurrentCol, Row, MoveLeft)
-                );
-                (
-                        NewMove = [[CurrentCol, CurrentRow]],
-                        append([], NewMove, MoveLeft),
-                        availableLeftMove(GameState, CurrentCol, -1, MoveLeft)
-                )
-        ).
+        checkLeftCell(Cell, Row, CurrentRow, CurrentCol, MoveLeft),
+        availableLeftMove(GameState, CurrentCol, Row, MoveLeft).
 
 availableUpMove(_, -1, _, []).
 availableUpMove(_, -1, _, _).
 availableUpMove(GameState, CurrentCol, CurrentRow, MoveUp):-
         ColAux is (CurrentCol+1), RowAux is (CurrentRow+1),
         getCell(GameState, ColAux, RowAux, Cell), !,
-        (
-                (
-                        isEmpty(Cell),
-                        Col is (CurrentCol-1),
-                        availableUpMove(GameState, Col, CurrentRow, MoveUp)
-                );
-                (
-                        NewMove = [[CurrentCol, CurrentRow]],
-                        append([], NewMove, MoveUp),
-                        availableUpMove(GameState, -1, CurrentRow, MoveUp)
-                )
-        ).
+        checkUpCell(Cell, Col, CurrentCol, CurrentRow, MoveUp),
+        availableUpMove(GameState, Col, CurrentRow, MoveUp).
 
 availableDownMove(_, Col, _, Col, []).
 availableDownMove(_, Col, _, Col, _).
 availableDownMove(GameState, CurrentCol, CurrentRow, MaxCol, MoveDown):-
         ColAux is (CurrentCol+1), RowAux is (CurrentRow+1),
         getCell(GameState, ColAux, RowAux, Cell), !,
-        (
-                (
-                        isEmpty(Cell),
-                        Col is (CurrentCol+1),
-                        availableDownMove(GameState, Col, CurrentRow, MaxCol, MoveDown)
-                );
-                (
-                        NewMove = [[CurrentCol, CurrentRow]],
-                        append([], NewMove, MoveDown),
-                        availableDownMove(GameState, MaxCol, CurrentRow, MaxCol, MoveDown)
-                )
-        ).
+        checkDownCell(Cell, MaxCol, Col, CurrentCol, CurrentRow, MoveDown),
+        availableDownMove(GameState, Col, CurrentRow, MaxCol, MoveDown).
