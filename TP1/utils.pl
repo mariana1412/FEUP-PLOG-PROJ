@@ -1,7 +1,7 @@
 %get cell content from GameState
 getCell(GameState, CellCol, CellRow, Cell):-
-        nth1(CellRow, GameState, Row),
-        nth1(CellCol, Row, Cell).
+        nth0(CellRow, GameState, Row),
+        nth0(CellCol, Row, Cell).
 
 %get size of Board
 sizeBoard(GameState, NoCol, NoRow):-
@@ -22,7 +22,7 @@ updateBoardGame(StartCell, StartCol, StartRow, EndCell, EndCol, EndRow, GameStat
         updateBoard(AuxState, EndCol, EndRow, NewCell, NewState). %add new values to the EndCell
 
 %makes sure that the index of first row/column is 0, updates Board
-updateBoard(GameState, Col, Row, Cell, NewState):- Row1 is Row-1, Col1 is Col-1, updateRow(GameState, Col1, Row1, Cell, NewState).
+updateBoard(GameState, Col, Row, Cell, NewState):- updateRow(GameState, Col, Row, Cell, NewState).
 
 %when it is in the right row, it updates column; otherwise, updates row
 updateRow([H|T], Col, 0, Cell, [NH|T]) :- updateColumn(H, Col, Cell, NH).
@@ -122,8 +122,7 @@ getPlayerPieces(_, Index, BlackP, BlackPieces, WhiteP, WhitePieces, MaxCol, MaxR
 
 getPlayerPieces(GameState, Index, BlackP, BlackPieces, WhiteP, WhitePieces, MaxCol, MaxRow) :-
         getColRowbyIndex(Index, CurrentCol, CurrentRow, MaxCol),
-        Col is (CurrentCol+1), Row is (CurrentRow+1),
-        getCell(GameState, Col, Row, Cell),
+        getCell(GameState, CurrentCol, CurrentRow, Cell),
         processCell(Cell, BP, WP),
         append(BlackP, [BP], Black),
         append(WhiteP, [WP], White),

@@ -12,14 +12,43 @@ code(1, 'G').
 code(2, 'B').
 code(3, 'W').
 
+%translates the column letter into a number
+column('A', 0).
+column('B', 1).
+column('C', 2).
+column('D', 3).
+column('E', 4).
+column('F', 5).
+column('G', 6).
+column('H', 7).
+column('I', 8).
+column(_, -1).
+
+row('1', 0).
+row('2', 1).
+row('3', 2).
+row('4', 3).
+row('5', 4).
+row('6', 5).
+row('7', 5).
+row('8', 5).
+row('9', 5).
+row(_, -1).
+
+option('1', 1).
+option('2', 2).
+option('3', 3).
+option('4', 4).
+option(_, -1).
+
 %initial board setup
 initial([
-[[1, 1, 1], [3, 0, 1], [1, 1, 1], [3, 0, 1], [2, 0, 1], [1, 1, 1]],
-[[2, 0, 1], [1, 1, 1], [2, 0, 1], [1, 1, 1], [3, 0, 1], [2, 0, 1]],
-[[1, 1, 1], [3, 0, 1], [1, 1, 1], [1, 1, 1], [1, 1, 1], [1, 1, 1]],
-[[2, 0, 1], [1, 1, 1], [2, 0, 1], [1, 1, 1], [1, 1, 1], [2, 0, 1]],
-[[3, 0, 1], [1, 1, 1], [3, 0, 1], [3, 0, 1], [1, 1, 1], [3, 0, 1]],
-[[1, 1, 1], [2, 0, 1], [1, 1, 1], [2, 0, 1], [1, 1, 1], [3, 0, 1]]
+[[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]],
+[[0, 0, 0], [0, 0, 0], [0, 0, 0], [2, 4, 7], [0, 0, 0], [0, 0, 0]],
+[[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [3, 2, 4]],
+[[0, 0, 0], [0, 0, 0], [3, 7, 17], [0, 0, 0], [0, 0, 0], [0, 0, 0]],
+[[0, 0, 0], [3, 3, 4], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]],
+[[3, 2, 4], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
 ]).
 
 %prints the row coordinate
@@ -34,7 +63,7 @@ printStack(0, _Stack).
 printStack(Color, Stack):- Color\=0, write('/'), format('~|~`0t~d~2+', Stack), write('|').
 
 %prints the cell color
-printCellColor([Color, Points, Stack]) :-
+printCellColor([Color|_]) :-
         write('  '),
         code(Color, Character),
         write(Character),
@@ -101,3 +130,14 @@ displayGameOver(2):- write('I\'ts a tie!\n').
 displayPointsStack(BlackPoints, BlackHighestStack, WhitePoints, WhiteHighestStack):-
         write('Black ----> Points = '), write(BlackPoints), write(', Highest Stack: '), write(BlackHighestStack), nl,
         write('White ----> Points = '), write(WhitePoints), write(', Highest Stack: '), write(WhiteHighestStack), nl.
+
+displayValidMoves([_|T]):-
+        write('You can move that piece to: '),
+        displayValidMove(T, 1), nl.
+
+displayValidMove([], _).
+displayValidMove([H|T], N):-
+        write(N), write('.'),
+        H = [Col, Row], column(CharCol, Col), row(CharRow, Row),
+        write(CharCol), write(CharRow), write('  '),
+        NextN is (N+1), displayValidMove(T, NextN).
