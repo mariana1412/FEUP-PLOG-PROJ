@@ -26,36 +26,47 @@ initial([
 printNumber(N):- number(N, Number), write(Number), write('|').
 
 %prints the cell points
-printPoints(0, _Points):- write('    |').
-printPoints(Color, Points):- Color\=0, write('/'), write(Points).
+printPoints(0, _Points):- write('     |').
+printPoints(Color, Points):- Color\=0, format('~|~`0t~d~2+', Points).
 
 %prints the cell stack height
 printStack(0, _Stack).
-printStack(Color, Stack):- Color\=0, write('/'), write(Stack), write('|').
+printStack(Color, Stack):- Color\=0, write('/'), format('~|~`0t~d~2+', Stack), write('|').
 
-%prints the cell
-printCell([Color, Points, Stack]):-
+%prints the cell color
+printCellColor([Color, Points, Stack]) :-
+        write('  '),
         code(Color, Character),
         write(Character),
+        write('  |').
+
+%prints the cell Points and Stack Height
+printCellPointsStack([Color, Points, Stack]) :-
         printPoints(Color, Points),
         printStack(Color, Stack).
 
-%prints the line, cell by cell
-printLine([]).
-printLine([Cell | Line]):- printCell(Cell), printLine(Line).
+printLineColor([]).
+printLineColor([Cell | Line]):- printCellColor(Cell), printLineColor(Line).
+
+printLinePointsStack([]).
+printLinePointsStack([Cell | Line]):- printCellPointsStack(Cell), printLinePointsStack(Line).
 
 %prints a dashed separator
-printSeparator(1):- write(' |-----|-----|-----|-----|-----|-----|'), nl, printSeparator(2).
-printSeparator(2):- write(' |     |     |     |     |     |     |'), nl.
+printSeparator(1):- write(' |-----|-----|-----|-----|-----|-----|'), nl.
+printSeparator(2):- write('     |     |     |     |     |     |').
 
 %prints the board, line by line
 printTab([], 0, _Player):- write(' |-----|-----|-----|-----|-----|-----|'), nl.
+
 printTab([Line|B], N, Player):- 
         printSeparator(1),
+        write(' |'),
+        printLineColor(Line), nl,
         printNumber(N),
-        printLine(Line),
-        printInfo(N, Player), nl,
         printSeparator(2),
+        printInfo(N, Player), nl,
+        write(' |'),
+        printLinePointsStack(Line), nl,
         N1 is N-1, printTab(B, N1, Player).
 
 %o tabuleiro vai ser de tamanho NxN
