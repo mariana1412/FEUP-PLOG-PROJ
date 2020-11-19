@@ -26,8 +26,8 @@ verifyStartCell(GameState, Player, _, _, Cell, Column, Row, ValidMoves):-
 readOption(ValidMoves, Column, Row):-
         get_char(Option), get_char(_),
         checkOption(Option, ValidMoves, Op),
-        nth0(Op, ValidMoves, Cell),
-        Cell = [Column, Row].      
+        nth1(Op, ValidMoves, Move),
+        Move = [[_,_], [Column, Row]]. 
 
 checkOption(Option, ValidMoves, Op):-
         length(ValidMoves, NoCell),
@@ -36,7 +36,7 @@ checkOption(Option, ValidMoves, Op):-
 
 %reads end cell with error handling
 readEnd(Cell, Column, Row, GameState, ValidMoves):- 
-        displayValidMoves(ValidMoves),
+        displayValidMoves(ValidMoves), nl,
         write('Where are you moving it to? Insert the number of the chosen cell: '),
         readOption(ValidMoves, Column, Row),
         write('Column: '), write(Column), write(' Row: '), write(Row), nl,

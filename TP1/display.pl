@@ -30,9 +30,9 @@ row('3', 2).
 row('4', 3).
 row('5', 4).
 row('6', 5).
-row('7', 5).
-row('8', 5).
-row('9', 5).
+row('7', 6).
+row('8', 7).
+row('9', 8).
 row(_, -1).
 
 option('1', 1).
@@ -131,13 +131,13 @@ displayPointsStack(BlackPoints, BlackHighestStack, WhitePoints, WhiteHighestStac
         write('Black ----> Points = '), write(BlackPoints), write(', Highest Stack: '), write(BlackHighestStack), nl,
         write('White ----> Points = '), write(WhitePoints), write(', Highest Stack: '), write(WhiteHighestStack), nl.
 
-displayValidMoves([_|T]):-
+displayValidMoves(Moves):-
         write('You can move that piece to: '),
-        displayValidMove(T, 1), nl.
+        displayValidMove(Moves, 1), nl.
 
 displayValidMove([], _).
 displayValidMove([H|T], N):-
         write(N), write('.'),
-        H = [Col, Row], column(CharCol, Col), row(CharRow, Row),
+        H = [[_, _], [Col, Row]], column(CharCol, Col), row(CharRow, Row),
         write(CharCol), write(CharRow), write('  '),
         NextN is (N+1), displayValidMove(T, NextN).

@@ -1,17 +1,19 @@
 cellValidMoves(GameState, Player, Column, Row, ValidMoves):-
         valid_moves(GameState, Player, ListMoves),
         Cell = [Column, Row], !,
-        getCellValidMoves(Cell, ListMoves, ValidMoves).
+        getCellValidMoves(Cell, ListMoves, [], ValidMoves).
 
-getCellValidMoves(_, [], []).
+getCellValidMoves(_, [], AuxMoves, ValidMoves):-
+        ValidMoves = AuxMoves.
 
-getCellValidMoves(Cell, [H|_], CellMoves):- 
+getCellValidMoves(Cell, [H|T], AuxMoves, ValidMoves):- 
         H = [Cell|_],
-        CellMoves = H.
+        append(AuxMoves, [H], Moves),
+        getCellValidMoves(Cell, T, Moves, ValidMoves).
 
-getCellValidMoves(Cell, [H|T], CellMoves):-
+getCellValidMoves(Cell, [H|T], AuxMoves, ValidMoves):-
         H \= [Cell|_],
-        getCellValidMoves(Cell, T, CellMoves).
+        getCellValidMoves(Cell, T, AuxMoves, ValidMoves).
 
 valid_moves(GameState, Player, ListOfMoves):-
         Player = [[Color|_]|_],
@@ -25,7 +27,7 @@ availableMoves(GameState, Player, Index, MaxCol, MaxRow, List, ListMoves):-
         availableCell(GameState, Player, CurrentCol, CurrentRow, MaxCol, MaxRow, Moves),
         NextIndex is (Index+1),
         append(List, [], M),
-        append(M, [Moves], NewMoves),
+        append(M, Moves, NewMoves),
         deleteEmptyList(NewMoves, CleanMoves),
         availableMoves(GameState, Player, NextIndex, MaxCol, MaxRow, CleanMoves, ListMoves).
 
@@ -43,38 +45,40 @@ availableCell(GameState, 0, CurrentCol, CurrentRow, _, _, ListOfMoves):-
 
 availableCell(GameState, _, CurrentCol, CurrentRow, MaxCol, MaxRow, ListOfMoves):-
         NextRow is (CurrentRow+1), PreviousRow is (CurrentRow-1), NextCol is (CurrentCol+1), PreviousCol is (CurrentCol-1),
-        availableRightMove(GameState, CurrentCol, NextRow, MaxRow, MoveRight),
-        availableLeftMove(GameState, CurrentCol, PreviousRow, MoveLeft),
-        availableDownMove(GameState, NextCol, CurrentRow, MaxCol, MoveDown),
-        availableUpMove(GameState, PreviousCol, CurrentRow, MoveUp), 
-        append4Lists(MoveUp, MoveLeft, MoveRight, MoveDown, Final), 
-        deleteEmptyList(Final, CleanFinal),
-        addMove(CleanFinal, ListOfMoves, CurrentCol, CurrentRow).
+        availableUpMove(GameState, PreviousRow, CurrentCol, MoveUp),
+        addMove(MoveUp, [], CurrentCol, CurrentRow, MovesUp),
+        availableLeftMove(GameState, CurrentRow, PreviousCol, MoveLeft),
+        addMove(MoveLeft, MovesUp, CurrentCol, CurrentRow, MovesLeft),
+        availableRightMove(GameState, CurrentRow, NextCol, MaxCol, MoveRight),
+        addMove(MoveRight, MovesLeft, CurrentCol, CurrentRow, MovesRight),
+        availableDownMove(GameState, NextRow, CurrentCol, MaxRow, MoveDown),
+        addMove(MoveDown, MovesRight, CurrentCol, CurrentRow, ListOfMoves).
 
-availableRightMove(_, _, Row, Row, []).
-availableRightMove(_, _, Row, Row, _).
-availableRightMove(GameState, CurrentCol, CurrentRow, MaxRow, MoveRight):-
+
+availableRightMove(_, _, Col, Col, []).
+availableRightMove(_, _, Col, Col, _).
+availableRightMove(GameState, CurrentRow, CurrentCol, MaxCol, MoveRight):-
         getCell(GameState, CurrentCol, CurrentRow, Cell), !,
-        checkRightCell(Cell, MaxRow, Row, CurrentRow, CurrentCol, MoveRight),
-        availableRightMove(GameState, CurrentCol, Row, MaxRow, MoveRight).
+        checkRightCell(Cell, MaxCol, Col, CurrentCol, CurrentRow, MoveRight),
+        availableRightMove(GameState, CurrentRow, Col, MaxCol, MoveRight).
 
 availableLeftMove(_, _, -1, []).
 availableLeftMove(_, _, -1, _).
-availableLeftMove(GameState, CurrentCol, CurrentRow, MoveLeft):-
+availableLeftMove(GameState, CurrentRow, CurrentCol, MoveLeft):-
         getCell(GameState, CurrentCol, CurrentRow, Cell), !,
-        checkLeftCell(Cell, Row, CurrentRow, CurrentCol, MoveLeft),
-        availableLeftMove(GameState, CurrentCol, Row, MoveLeft).
+        checkLeftCell(Cell, Col, CurrentCol, CurrentRow, MoveLeft),
+        availableLeftMove(GameState, CurrentRow, Col, MoveLeft).
 
 availableUpMove(_, -1, _, []).
 availableUpMove(_, -1, _, _).
-availableUpMove(GameState, CurrentCol, CurrentRow, MoveUp):-
+availableUpMove(GameState, CurrentRow, CurrentCol, MoveUp):-
         getCell(GameState, CurrentCol, CurrentRow, Cell), !,
-        checkUpCell(Cell, Col, CurrentCol, CurrentRow, MoveUp),
-        availableUpMove(GameState, Col, CurrentRow, MoveUp).
+        checkUpCell(Cell, Row, CurrentRow, CurrentCol, MoveUp),
+        availableUpMove(GameState, Row, CurrentCol, MoveUp).
 
-availableDownMove(_, Col, _, Col, []).
-availableDownMove(_, Col, _, Col, _).
-availableDownMove(GameState, CurrentCol, CurrentRow, MaxCol, MoveDown):-
+availableDownMove(_, Row, _, Row, []).
+availableDownMove(_, Row, _, Row, _).
+availableDownMove(GameState, CurrentRow, CurrentCol, MaxRow, MoveDown):-
         getCell(GameState, CurrentCol, CurrentRow, Cell), !,
-        checkDownCell(Cell, MaxCol, Col, CurrentCol, CurrentRow, MoveDown),
-        availableDownMove(GameState, Col, CurrentRow, MaxCol, MoveDown).
+        checkDownCell(Cell, MaxRow, Row, CurrentRow, CurrentCol, MoveDown),
+        availableDownMove(GameState, Row, CurrentCol, MaxRow, MoveDown).

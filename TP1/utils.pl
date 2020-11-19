@@ -61,39 +61,43 @@ deleteEmptyList(L1, L2) :-
         deleteOne([], L1, L),
         deleteEmptyList(L, L2). 
 
-addMove([], _, _, _).
-addMove(CleanFinal, ListOfMoves, CurrentCol, CurrentRow):- append([[CurrentCol, CurrentRow]], CleanFinal, ListOfMoves).
+addMove([], ListOfMoves, _, _, NewListOfMoves):-
+        append(ListOfMoves, [], NewListOfMoves).
 
-checkRightCell(Cell, _, Row, CurrentRow, _, _):-
+addMove(CleanFinal, ListOfMoves, CurrentCol, CurrentRow, NewListOfMoves):-
+        append([[CurrentCol, CurrentRow]], CleanFinal, NewMove),
+        append(ListOfMoves, [NewMove], NewListOfMoves).
+
+checkDownCell(Cell, _, Row, CurrentRow, _, _):-
         isEmpty(Cell),
         Row is (CurrentRow+1).
-checkRightCell(_, MaxRow, Row, CurrentRow, CurrentCol, MoveRight):-
-        NewMove = [[CurrentCol, CurrentRow]],
-        append([], NewMove, MoveRight),
-        Row is MaxRow.
-
-checkLeftCell(Cell, Row, CurrentRow, _, _):-
-        isEmpty(Cell),
-        Row is (CurrentRow-1).
-checkLeftCell(_, Row, CurrentRow, CurrentCol, MoveLeft):-
-        NewMove = [[CurrentCol, CurrentRow]],
-        append([], NewMove, MoveLeft),
-        Row is -1.
-
-checkUpCell(Cell, Col, CurrentCol, _, _):-
-        isEmpty(Cell),
-        Col is (CurrentCol-1).
-checkUpCell(_, Col, CurrentCol, CurrentRow, MoveUp):-
-        NewMove = [[CurrentCol, CurrentRow]],
-        append([], NewMove, MoveUp),
-        Col is -1.
-
-checkDownCell(Cell, _, Col, CurrentCol, _, _):-
-        isEmpty(Cell),
-        Col is (CurrentCol+1).
-checkDownCell(_, MaxCol, Col, CurrentCol, CurrentRow, MoveDown):-
+checkDownCell(_, MaxRow, Row, CurrentRow, CurrentCol, MoveDown):-
         NewMove = [[CurrentCol, CurrentRow]],
         append([], NewMove, MoveDown),
+        Row is MaxRow.
+
+checkUpCell(Cell, Row, CurrentRow, _, _):-
+        isEmpty(Cell),
+        Row is (CurrentRow-1).
+checkUpCell(_, Row, CurrentRow, CurrentCol, MoveUp):-
+        NewMove = [[CurrentCol, CurrentRow]],
+        append([], NewMove, MoveUp),
+        Row is -1.
+
+checkLeftCell(Cell, Col, CurrentCol, _, _):-
+        isEmpty(Cell),
+        Col is (CurrentCol-1).
+checkLeftCell(_, Col, CurrentCol, CurrentRow, MoveLeft):-
+        NewMove = [[CurrentCol, CurrentRow]],
+        append([], NewMove, MoveLeft),
+        Col is -1.
+
+checkRightCell(Cell, _, Col, CurrentCol, _, _):-
+        isEmpty(Cell),
+        Col is (CurrentCol+1).
+checkRightCell(_, MaxCol, Col, CurrentCol, CurrentRow, MoveRight):-
+        NewMove = [[CurrentCol, CurrentRow]],
+        append([], NewMove, MoveRight),
         Col is MaxCol.
 
 append4Lists(List1, List2, List3, List4, Final):-
