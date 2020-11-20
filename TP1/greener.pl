@@ -1,9 +1,11 @@
 :-use_module(library(lists)).
+:-use_module(library(system)).
 :-include('display.pl').
 :-include('utils.pl').
 :-include('input.pl').
 :-include('logic.pl').
 :-include('play.pl').
+:-include('computer.pl').
 
 %main function -> it initializes the board and
 play :- initial(GameState),

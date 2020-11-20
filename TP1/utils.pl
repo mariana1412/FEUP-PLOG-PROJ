@@ -147,3 +147,8 @@ processPlayerPieces([H|T], P, S, Points, Stack):-
 
 compareStack(HighestStack, Stack, FinalStack):- Stack > HighestStack, FinalStack = Stack.
 compareStack(HighestStack, _, HighestStack).
+
+displayMove([[Ci, Ri], [Cf, Rf]]):-
+        column(CiChar, Ci), row(RiChar, Ri),
+        column(CfChar, Cf), row(RfChar, Rf),
+        write(CiChar), write(RiChar), write(' -> '), write(CfChar), write(RfChar).
