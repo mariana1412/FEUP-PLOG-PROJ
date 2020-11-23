@@ -72,6 +72,26 @@ getPlayerOptions(Player):-
         getPlayerOptions(Player).
 
 getPlayerFromOption(1, [[0, 0, 0], [1, 0, 0]]).
-getPlayerFromOption(2, [[0, 0, 0], [1, 0, 1]]).
-getPlayerFromOption(3, [[0, 0, 1], [1, 0, 0]]).
-getPlayerFromOption(4, [[0, 0, 1], [1, 0, 1]]).
+
+getPlayerFromOption(2, Player):-
+        getLevelOption(2, Level), nl,
+        Player = [[0, 0, 0], [1, 0, Level]].
+
+getPlayerFromOption(3, Player):-
+        getLevelOption(1, Level), nl,
+        Player = [[0, 0, Level], [1, 0, 0]].
+
+getPlayerFromOption(4, Player):-
+        getLevelOption(1, Level1), nl,
+        getLevelOption(2, Level2), nl,
+        Player = [[0, 0, Level1], [1, 0, Level2]].
+
+getLevelOption(Player, Level):-
+        write('What is the level of Player '), write(Player), write('?  1.Random | 2.Smart'), nl,
+        get_char(Option), get_char(_),
+        option(Option, Level),
+        Level > 0, Level < 3.
+
+getLevelOption(Player, Level):-
+        write('\nInvalid Input.'), nl,
+        getLevelOption(Player, Level).

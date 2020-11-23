@@ -31,12 +31,12 @@ move(Player, GameState, NewGameState):-
         NewGameState = [NewState, NewPlayer].
 
 move(Player, GameState, NewGameState):-
-        Player = [[_, _, 1], _],
+        Player = [[_, _, Level], _],
         nl, write('Computer is thinking...'), nl,
-        value(GameState, Player, Value),
+        choose_move(GameState, Player, Level, Move),
         sleep(2),
-        nl, write('Computer plays '), displayMove(Value), nl, nl,
-        Value = [[StartCol, StartRow], [EndCol, EndRow]],
+        nl, write('Computer plays '), displayMove(Move), nl, nl,
+        Move = [[StartCol, StartRow], [EndCol, EndRow]],
         getCell(GameState, StartCol, StartRow, StartCell),
         getCell(GameState, EndCol, EndRow, EndCell),
         updatePoints(Player, StartCell, EndCell, NewPlayer),

@@ -1,5 +1,6 @@
 :-use_module(library(lists)).
 :-use_module(library(system)).
+:-use_module(library(random)).
 :-include('display.pl').
 :-include('utils.pl').
 :-include('input.pl').

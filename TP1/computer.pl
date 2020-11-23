@@ -1,3 +1,12 @@
+choose_move(GameState, Player, 1, Move):-
+        valid_moves(GameState, Player, ListOfMoves),
+        length(ListOfMoves, Len),
+        random(0, Len, MoveNumber),
+        nth0(MoveNumber, ListOfMoves, Move).
+
+choose_move(GameState, Player, 2, Move):-
+        value(GameState, Player, Move).
+
 value(GameState, Player, Value):-
         valid_moves(GameState, Player, ListOfMoves),
         bestMove(GameState, Player, ListOfMoves, [], Value, [-1, -2], _).
@@ -49,6 +58,14 @@ compareValue([Vi, Ei], [_, Ce], Move, _, FinalMove, FinalValue):-
         FinalMove = Move,
         FinalValue = [Vi, Ei].
 
-compareValue(_, [Cv, Ce], _, CurrentMove, FinalMove, FinalValue):-
+compareValue([Vi, Ei], [Cv, Ce], Move, CurrentMove, FinalMove, FinalValue):-
+        randomChange([Vi, Ei], [Cv, Ce], Move, CurrentMove, FinalMove, FinalValue).
+
+randomChange(_, [Cv, Ce], _, CurrentMove, FinalMove, FinalValue):-
+        random(0, 2, 0),
         FinalMove = CurrentMove,
         FinalValue = [Cv, Ce].
+
+randomChange([Vi, Ei], _, Move, _, FinalMove, FinalValue):-
+        FinalMove = Move,
+        FinalValue = [Vi, Ei].
