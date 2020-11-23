@@ -112,8 +112,8 @@ printInfo(6, 1):- write(' It is white\'s turn!').
 printInfo(_N, _Player).
 
 %prints the current points
-printPlayersPoints([[0, BlackPoints], [1, WhitePoints]]):- printBlackPoints(BlackPoints), printWhitePoints(WhitePoints).
-printPlayersPoints([[1, WhitePoints], [0, BlackPoints]]):- printBlackPoints(BlackPoints), printWhitePoints(WhitePoints).
+printPlayersPoints([[0, BlackPoints, _], [1, WhitePoints, _]]):- printBlackPoints(BlackPoints), printWhitePoints(WhitePoints).
+printPlayersPoints([[1, WhitePoints, _], [0, BlackPoints, _]]):- printBlackPoints(BlackPoints), printWhitePoints(WhitePoints).
 
 %prints the current black points
 printBlackPoints(1):- write('\n\n  Black: 1 point\n').
@@ -141,3 +141,24 @@ displayValidMove([H|T], N):-
         H = [[_, _], [Col, Row]], column(CharCol, Col), row(CharRow, Row),
         write(CharCol), write(CharRow), write('  '),
         NextN is (N+1), displayValidMove(T, NextN).
+
+displayMove([[Ci, Ri], [Cf, Rf]]):-
+        column(CiChar, Ci), row(RiChar, Ri),
+        column(CfChar, Cf), row(RfChar, Rf),
+        write(CiChar), write(RiChar), write(' -> '), write(CfChar), write(RfChar).
+
+displayMenu:-
+        write('===================================================================='), nl,
+        write('|                                                                  |'), nl,
+        write('|                               MENU                               |'), nl,
+        write('|                                                                  |'), nl,
+        write('|                     1 - Player vs Player                         |'), nl,
+        write('|                     2 - Player vs Computer                       |'), nl,
+        write('|                     3 - Computer vs Player                       |'), nl,
+        write('|                     4 - Computer vs Computer                     |'), nl,
+        write('|                                                                  |'), nl,
+        write('===================================================================='), nl,
+        write(' How do you want to play? ').
+        
+
+        

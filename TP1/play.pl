@@ -24,24 +24,25 @@ processTurn(Player, GameState, [GameState, Player]):- write('\nPlayer does not h
 
 %Processes a new move, update points and board
 move(Player, GameState, NewGameState):-
-        Player = [[0, _], _],
+        Player = [[_, _, 0], _], !,
         readMove(Player, GameState, StartCell, StartCol, StartRow, EndCell, EndCol, EndRow), !,
         updatePoints(Player, StartCell, EndCell, NewPlayer),
         updateBoardGame(StartCell, StartCol, StartRow, EndCell, EndCol, EndRow, GameState, NewState),
         NewGameState = [NewState, NewPlayer].
 
 move(Player, GameState, NewGameState):-
-        Player = [[1, _], _],
-        sleep(2),
+        Player = [[_, _, 1], _],
+        nl, write('Computer is thinking...'), nl,
         value(GameState, Player, Value),
-        nl, write('Computer plays '), displayMove(Value), nl, nl,
         sleep(2),
+        nl, write('Computer plays '), displayMove(Value), nl, nl,
         Value = [[StartCol, StartRow], [EndCol, EndRow]],
         getCell(GameState, StartCol, StartRow, StartCell),
         getCell(GameState, EndCol, EndRow, EndCell),
         updatePoints(Player, StartCell, EndCell, NewPlayer),
         updateBoardGame(StartCell, StartCol, StartRow, EndCell, EndCol, EndRow, GameState, NewState),
-        NewGameState = [NewState, NewPlayer].
+        NewGameState = [NewState, NewPlayer],
+        sleep(3).
 
 move(Player, GameState, NewGameState):-
         write('Invalid move. Try again!\n'),

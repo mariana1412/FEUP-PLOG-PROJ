@@ -40,12 +40,12 @@ updateColumn([H|T], Col, Cell, [H|NT]) :-
 isEmpty([0, _, _]).
 
 %changes order of sublists
-changePlayer([[Color, Points], [Color1, Points1]], Player) :- Player = [[Color1, Points1], [Color, Points]].
+changePlayer([[Color1, Points1, P1], [Color2, Points2, P2]], Player) :- Player = [[Color2, Points2, P2], [Color1, Points1, P1]].
 
 %update Player points
 updatePoints(Player, [X|_], [X|_], Player). %capturing piece of the same color
-updatePoints([[Color, Points], Player], _, [1, 1|_], [[Color, NP], Player]):- NP is (Points + 1). %capturing green piece
-updatePoints([[Color, Points], [Color1, Points1]], [X|_], [Y, Add|_], [[Color, NP], [Color1, NP1]]):- %capturing enemy piece, update both sublists
+updatePoints([[Color, Points, P1], Player], _, [1, 1|_], [[Color, NP, P1], Player]):- NP is (Points + 1). %capturing green piece
+updatePoints([[Color, Points, P1], [Color1, Points1, P2]], [X|_], [Y, Add|_], [[Color, NP, P1], [Color1, NP1, P2]]):- %capturing enemy piece, update both sublists
             X\=Y, Y\=1,
             NP is (Points + Add),
             NP1 is (Points1 - Add).
@@ -148,7 +148,3 @@ processPlayerPieces([H|T], P, S, Points, Stack):-
 compareStack(HighestStack, Stack, FinalStack):- Stack > HighestStack, FinalStack = Stack.
 compareStack(HighestStack, _, HighestStack).
 
-displayMove([[Ci, Ri], [Cf, Rf]]):-
-        column(CiChar, Ci), row(RiChar, Ri),
-        column(CfChar, Cf), row(RfChar, Rf),
-        write(CiChar), write(RiChar), write(' -> '), write(CfChar), write(RfChar).

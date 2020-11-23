@@ -1,23 +1,54 @@
 value(GameState, Player, Value):-
-        valid_moves(GameState, Player, ListOfMoves),!,
-        bestMove(GameState, Player, ListOfMoves, _, Value, -1, _).
+        valid_moves(GameState, Player, ListOfMoves),
+        bestMove(GameState, Player, ListOfMoves, [], Value, [-1, -2], _).
 
-bestMove(_, _, [], Move, FinalMove, Value, FinalValue):- FinalValue is Value, FinalMove = Move.
+bestMove(_, _, [], Move, FinalMove, Value, FinalValue):- FinalValue = Value, FinalMove = Move.
 
-bestMove(GameState, Player, [H | T], _, FinalMove, Value, FinalValue):-
+bestMove(GameState, Player, [H | T], Move, FinalMove, Value, FinalValue):-
         %write('evaluating: '), print(H), nl,
         evaluateMove(GameState, Player, H, MoveValue),
-        MoveValue > Value, !,
-        %write('moveValue: '), write(MoveValue), write(' current Value: '), write(Value), nl,
-        bestMove(GameState, Player, T, H, FinalMove, MoveValue, FinalValue).
+        compareValue(MoveValue, Value, H, Move, CurrentMove, CurrentValue),
+        %write('moveValue: '), print(MoveValue), write(' current Value: '), print(Value), nl,
+        bestMove(GameState, Player, T, CurrentMove, FinalMove, CurrentValue, FinalValue).
 
-bestMove(GameState, Player, [_ | T], Move, FinalMove, Value, FinalValue):-
-        %write('not larger'), nl,
-        bestMove(GameState, Player, T, Move, FinalMove, Value, FinalValue).
-
-evaluateMove(GameState, Player, Move, MoveValue):-
+evaluateMove(GameState, [[_, P1Points, _], [_, P2Points, _]], Move, MoveValue):-
         Move = [[Ci, Ri], [Cf, Rf]],
         getCell(GameState, Ci, Ri, StartCell),
         getCell(GameState, Cf, Rf, EndCell),
         %print(StartCell), write(' to '), print(EndCell), nl,
-        updatePoints(Player, StartCell, EndCell, [[_, MoveValue], _]).
+        updatePoints([[_, P1Points, _], [_, P2Points, _]], StartCell, EndCell, [[_, NewP1Points, _], [_, NewP2Points, _]]),
+        P1PointDiff is (NewP1Points-P1Points),
+        P2PointDiff is (NewP2Points-P2Points),
+        %write('Calculation: '), write(P1PointDiff), write(' and '), write(P2PointDiff), nl,
+        calculateValue(P1PointDiff, P2PointDiff, StartCell, EndCell, MoveValue).
+
+calculateValue(0, 0, [X | _], [X | _], Value):-
+        Value = [0, -1].
+
+calculateValue(0, 0, _, _, Value):-
+        Value = [0, 1].
+
+calculateValue(1, 0, _, _, Value):-
+        Value = [1, 0].
+
+calculateValue(V, _, _, _, Value):-
+        Value = [V, 1].
+
+compareValue([Vi, Ei], [Cv, _], Move, _, FinalMove, FinalValue):-
+        Vi > Cv,
+        FinalMove = Move,
+        FinalValue = [Vi, Ei].
+
+compareValue([Vi, _], [Cv, Ce], _, CurrentMove, FinalMove, FinalValue):-
+        Vi < Cv,
+        FinalMove = CurrentMove,
+        FinalValue = [Cv, Ce].
+
+compareValue([Vi, Ei], [_, Ce], Move, _, FinalMove, FinalValue):-
+        Ei > Ce,
+        FinalMove = Move,
+        FinalValue = [Vi, Ei].
+
+compareValue(_, [Cv, Ce], _, CurrentMove, FinalMove, FinalValue):-
+        FinalMove = CurrentMove,
+        FinalValue = [Cv, Ce].

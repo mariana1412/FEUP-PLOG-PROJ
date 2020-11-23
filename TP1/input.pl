@@ -53,4 +53,25 @@ readMove(Player, GameState, StartCell, StartColumn, StartRow, EndCell, EndColumn
         StartCell=StartC, StartColumn=StartCol, StartRow=StartR,
         EndCell=EndC, EndColumn=EndCol, EndRow=EndR.
 
-        
+checkMenuOption(OpChar, Option):-
+        option(OpChar, Option),
+        Option > 0, Option =< 4.
+
+readMenuOption(Option):-
+        get_char(OpChar), get_char(_),
+        checkMenuOption(OpChar, Option).
+
+
+getPlayerOptions(Player):-
+        nl, displayMenu,
+        readMenuOption(Option),
+        getPlayerFromOption(Option, Player).
+
+getPlayerOptions(Player):-
+        write('\nInvalid Input.'), nl,
+        getPlayerOptions(Player).
+
+getPlayerFromOption(1, [[0, 0, 0], [1, 0, 0]]).
+getPlayerFromOption(2, [[0, 0, 0], [1, 0, 1]]).
+getPlayerFromOption(3, [[0, 0, 1], [1, 0, 0]]).
+getPlayerFromOption(4, [[0, 0, 1], [1, 0, 1]]).
