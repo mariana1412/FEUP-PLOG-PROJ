@@ -149,7 +149,7 @@ compareStack(HighestStack, Stack, FinalStack):- Stack > HighestStack, FinalStack
 compareStack(HighestStack, _, HighestStack).
 
 initBoard(GameState, 1):- generateBoard(GameState, 9, 9, 18, 6, 6, []).   % size: 6x6
-initBoard(GameState, 2):- generateBoard(GameState, 18, 18, 18, 6, 9, []). % size: 6x9
+initBoard(GameState, 2):- generateBoard(GameState, 18, 18, 18, 9, 6, []). % size: 9x6
 initBoard(GameState, 3):- generateBoard(GameState, 27, 27, 27, 9, 9, []). % size: 9x9
 
 generateBoard(GameState, 0, 0, 0, _, 0, Board):- GameState = Board.

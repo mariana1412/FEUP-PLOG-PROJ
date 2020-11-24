@@ -159,7 +159,7 @@ displayBoardSizes:-
         write('|                   What is the size of the board?                 |'), nl,
         write('|                                                                  |'), nl,
         write('|                              1 - 6x6                             |'), nl,
-        write('|                              2 - 6x9                             |'), nl,
+        write('|                              2 - 9x6                             |'), nl,
         write('|                              3 - 9x9                             |'), nl,
         write('|                                                                  |'), nl,
         write('===================================================================='), nl,
