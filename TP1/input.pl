@@ -1,9 +1,9 @@
 %reads column and validates it
-readColumn(Column, NoCol):- write('Column: '), get_char(C), get_char(_), column(C, Col), Col \= -1, Col < NoCol, Column = Col.
+readColumn(Column, NoCol):- write('Column: '), get_char(C), C \= '\n', peek_char(Y), skip_line, Y == '\n', column(C, Col), Col \= -1, Col < NoCol, Column = Col.
 readColumn(Column, NoCol):- write('Column is invalid. Try again!\n'), readColumn(Column, NoCol).
 
 %reads row and validates it
-readRow(Row, NoRow):- write('Row: '), get_char(R), get_char(_), row(R, RAux), RAux \= -1, RAux < NoRow, Row = RAux.
+readRow(Row, NoRow):- write('Row: '), get_char(R), R \= '\n', peek_char(Y), skip_line, Y == '\n', row(R, RAux), RAux \= -1, RAux < NoRow, Row = RAux.
 readRow(Row, NoRow):- write('Row is invalid. Try again!\n'), readRow(Row, NoRow).
 
 %reads cell 
@@ -24,7 +24,7 @@ verifyStartCell(GameState, Player, _, _, Cell, Column, Row, ValidMoves):-
         readStart(Cell, Column, Row, Player, GameState, ValidMoves).
 
 readOption(ValidMoves, Column, Row):-
-        get_char(Option), get_char(_),
+        get_char(Option), Option \= '\n', peek_char(Y), skip_line, Y == '\n',
         checkOption(Option, ValidMoves, Op),
         nth1(Op, ValidMoves, Move),
         Move = [[_,_], [Column, Row]]. 
@@ -49,6 +49,7 @@ readEnd(Cell, Column, Row, GameState, ValidMoves):-
 %reads player move making sure it is a possible one
 readMove(Player, GameState, StartCell, StartColumn, StartRow, EndCell, EndColumn, EndRow):-
         nl, readStart(StartC, StartCol, StartR, Player, GameState, ValidMoves),
+        write('You chose piece '), displayColRow(StartCol, StartR), write('.\n'),
         readEnd(EndC, EndCol, EndR, GameState, ValidMoves),
         StartCell=StartC, StartColumn=StartCol, StartRow=StartR,
         EndCell=EndC, EndColumn=EndCol, EndRow=EndR.
@@ -58,7 +59,7 @@ checkMenuOption(OpChar, Option):-
         Option > 0, Option =< 4.
 
 readMenuOption(Option):-
-        get_char(OpChar), get_char(_),
+        get_char(OpChar), OpChar \= '\n', peek_char(Y), skip_line, Y == '\n',
         checkMenuOption(OpChar, Option).
 
 getPlayerOptions(Player):-
@@ -87,7 +88,7 @@ getPlayerFromOption(4, Player):-
 
 getLevelOption(Player, Level):-
         write('What is the level of Player '), write(Player), write('?  1.Random | 2.Smart'), nl,
-        get_char(Option), get_char(_),
+        get_char(Option), Option \= '\n', peek_char(Y), skip_line, Y == '\n',
         option(Option, Level),
         Level > 0, Level < 3.
 
@@ -97,7 +98,7 @@ getLevelOption(Player, Level):-
 
 getInitialGameState(GameState):-
         displayBoardSizes,
-        get_char(Option), get_char(_),
+        get_char(Option), Option \= '\n', peek_char(Y), skip_line, Y == '\n',
         option(Option, Op),
         Op > 0, Op < 4,
         initBoard(GameState, Op).

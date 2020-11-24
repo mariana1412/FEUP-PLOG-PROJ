@@ -54,7 +54,6 @@ availableCell(GameState, _, CurrentCol, CurrentRow, MaxCol, MaxRow, ListOfMoves)
         availableDownMove(GameState, NextRow, CurrentCol, MaxRow, MoveDown),
         addMove(MoveDown, MovesRight, CurrentCol, CurrentRow, ListOfMoves).
 
-
 availableRightMove(_, _, Col, Col, []).
 availableRightMove(_, _, Col, Col, _).
 availableRightMove(GameState, CurrentRow, CurrentCol, MaxCol, MoveRight):-

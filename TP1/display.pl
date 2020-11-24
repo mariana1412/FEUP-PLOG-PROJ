@@ -5,15 +5,15 @@ code(2, 'B').
 code(3, 'W').
 
 %translates the column letter into a number
-column('A', 0).
-column('B', 1).
-column('C', 2).
-column('D', 3).
-column('E', 4).
-column('F', 5).
-column('G', 6).
-column('H', 7).
-column('I', 8).
+column('A', 0). column('a', 0).
+column('B', 1). column('b', 1).
+column('C', 2). column('c', 2).
+column('D', 3). column('d', 3).
+column('E', 4). column('e', 4).
+column('F', 5). column('f', 5).
+column('G', 6). column('g', 6).
+column('H', 7). column('h', 7).
+column('I', 8). column('i', 8).
 column(_, -1).
 
 row('1', 0).
@@ -131,14 +131,17 @@ displayValidMoves(Moves):-
 displayValidMove([], _).
 displayValidMove([H|T], N):-
         write(N), write('.'),
-        H = [[_, _], [Col, Row]], column(CharCol, Col), row(CharRow, Row),
-        write(CharCol), write(CharRow), write('  '),
+        H = [[_, _], [Col, Row]], 
+        displayColRow(Col, Row), write('  '),
         NextN is (N+1), displayValidMove(T, NextN).
 
 displayMove([[Ci, Ri], [Cf, Rf]]):-
-        column(CiChar, Ci), row(RiChar, Ri),
-        column(CfChar, Cf), row(RfChar, Rf),
-        write(CiChar), write(RiChar), write(' -> '), write(CfChar), write(RfChar).
+        displayColRow(Ci, Ri),
+        write(' -> '), displayColRow(Cf, Rf).
+
+displayColRow(Col, Row):-
+        column(CharCol, Col), row(CharRow, Row),
+        write(CharCol), write(CharRow).
 
 displayMenu:-
         write('===================================================================='), nl,

@@ -20,7 +20,7 @@ nextMove(GameState, Player, NewPlayer, NewState):-
         display_game(NewState, NewPlayer).        
 
 processTurn(Player, GameState, NewGameState):- hasAvailableMoves(GameState, Player), move(Player, GameState, NewGameState).
-processTurn(Player, GameState, [GameState, Player]):- write('\nPlayer does not have available moves! Skipping turn!\n\n').
+processTurn(Player, GameState, [GameState, Player]):- write('\nPlayer does not have available moves! Skipping turn!\n\n'), sleep(1).
 
 %Processes a new move, update points and board
 move(Player, GameState, NewGameState):-
@@ -59,9 +59,8 @@ isFinished(GameState, Player):-
 
 finishGame(GameState):-
         nl, write('================================== GAME OVER ==================================\n'),
-        notrace,
         game_over(GameState, Winner),
-        displayGameOver(Winner), notrace.
+        displayGameOver(Winner).
 
 game_over(GameState, Winner):- 
         countPointsStack(GameState, BlackPoints, BlackHighestStack, WhitePoints, WhiteHighestStack),

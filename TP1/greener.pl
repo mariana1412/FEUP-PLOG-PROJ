@@ -9,7 +9,7 @@
 :-include('computer.pl').
 
 %main function -> it initializes the board and
-play :- getPlayerOptions(Player),
+play :- getPlayerOptions(Player), nl,
         getInitialGameState(GameState),
         display_game(GameState, Player),
         gameLoop(GameState, Player).
