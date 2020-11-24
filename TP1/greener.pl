@@ -10,7 +10,7 @@
 
 %main function -> it initializes the board and
 play :- getPlayerOptions(Player),
-        initial(GameState),
+        getInitialGameState(GameState),
         display_game(GameState, Player),
         gameLoop(GameState, Player).
 

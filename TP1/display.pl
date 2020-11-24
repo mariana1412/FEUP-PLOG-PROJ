@@ -1,11 +1,3 @@
-%inverts the line number, to print the right coordinate on the left side
-number(6, '1').
-number(5, '2').
-number(4, '3').
-number(3, '4').
-number(2, '5').
-number(1, '6').
-
 %translates the first cell list item
 code(0, ' ').
 code(1, 'G').
@@ -41,18 +33,8 @@ option('3', 3).
 option('4', 4).
 option(_, -1).
 
-%initial board setup
-initial([
-[[1, 1, 1], [3, 0, 1], [1, 1, 1], [3, 0, 1], [2, 0, 1], [1, 1, 1]],
-[[2, 0, 1], [1, 1, 1], [2, 0, 1], [1, 1, 1], [3, 0, 1], [2, 0, 1]],
-[[1, 1, 1], [3, 0, 1], [1, 1, 1], [1, 1, 1], [1, 1, 1], [1, 1, 1]],
-[[2, 0, 1], [1, 1, 1], [2, 0, 1], [1, 1, 1], [1, 1, 1], [2, 0, 1]],
-[[3, 0, 1], [1, 1, 1], [3, 0, 1], [3, 0, 1], [1, 1, 1], [3, 0, 1]],
-[[1, 1, 1], [2, 0, 1], [1, 1, 1], [2, 0, 1], [1, 1, 1], [3, 0, 1]]
-]).
-
 %prints the row coordinate
-printNumber(N):- number(N, Number), write(Number), write('|').
+printNumber(N):- Number is (N+1), write(Number), write('|').
 
 %prints the cell points
 printPoints(0, _Points):- write('     |').
@@ -81,34 +63,45 @@ printLinePointsStack([]).
 printLinePointsStack([Cell | Line]):- printCellPointsStack(Cell), printLinePointsStack(Line).
 
 %prints a dashed separator
-printSeparator(1):- write(' |-----|-----|-----|-----|-----|-----|'), nl.
-printSeparator(2):- write('     |     |     |     |     |     |').
+printSeparator(1, 0):- nl.
+printSeparator(1, NoCol):- write('-----|'), Col is (NoCol-1), printSeparator(1, Col).
+
+printSeparator(2, 0).
+printSeparator(2, NoCol):- write('     |'), Col is (NoCol-1), printSeparator(2, Col).
 
 %prints the board, line by line
-printTab([], 0, _Player):- write(' |-----|-----|-----|-----|-----|-----|'), nl.
+printTab([], NoCol, NoRow, NoRow, _):- write(' |'), printSeparator(1, NoCol).
 
-printTab([Line|B], N, Player):- 
-        printSeparator(1),
+printTab([Line|B], NoCol, NoRow, CurrentRow, Player):- 
+        write(' |'),
+        Col=NoCol,
+        printSeparator(1, Col),
         write(' |'),
         printLineColor(Line), nl,
-        printNumber(N),
-        printSeparator(2),
-        printInfo(N, Player), nl,
+        printNumber(CurrentRow),
+        Col1=NoCol,
+        printSeparator(2, Col1),
+        printInfo(CurrentRow, Player), nl,
         write(' |'),
         printLinePointsStack(Line), nl,
-        N1 is N-1, printTab(B, N1, Player).
+        N1 is CurrentRow+1, printTab(B, NoCol, NoRow, N1, Player).
 
 %o tabuleiro vai ser de tamanho NxN
-printBoard(X, N, Player):- printHeader, printTab(X, N, Player).
+printBoard(X, Player):- sizeBoard(X, NoCol, NoRow), printHeader(NoCol), printTab(X, NoCol, NoRow, 0, Player).
 
 %prints the board columns and cell key 
-printHeader:-
+printHeader(6):-
     write('\n    A     B     C     D     E     F    '),
     write('Cell Format: Color/Points/StackHeight\n').
 
+%prints the board columns and cell key 
+printHeader(9):-
+    write('\n    A     B     C     D     E     F     G     H     I    '),
+    write('Cell Format: Color/Points/StackHeight\n').
+
 %prints the player turn on the first line
-printInfo(6, 0):- write(' It is black\'s turn!').
-printInfo(6, 1):- write(' It is white\'s turn!').
+printInfo(4, 0):- write(' It is black\'s turn!').
+printInfo(4, 1):- write(' It is white\'s turn!').
 printInfo(_N, _Player).
 
 %prints the current points
@@ -158,7 +151,17 @@ displayMenu:-
         write('|                     4 - Computer vs Computer                     |'), nl,
         write('|                                                                  |'), nl,
         write('===================================================================='), nl,
-        write(' How do you want to play? ').
+        write('How do you want to play? Insert the number of the chosen option: ').
         
-
+displayBoardSizes:-
+        write('===================================================================='), nl,
+        write('|                                                                  |'), nl,
+        write('|                   What is the size of the board?                 |'), nl,
+        write('|                                                                  |'), nl,
+        write('|                              1 - 6x6                             |'), nl,
+        write('|                              2 - 6x9                             |'), nl,
+        write('|                              3 - 9x9                             |'), nl,
+        write('|                                                                  |'), nl,
+        write('===================================================================='), nl,
+        write('Insert the number of the chosen option: ').
         

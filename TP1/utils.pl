@@ -148,3 +148,53 @@ processPlayerPieces([H|T], P, S, Points, Stack):-
 compareStack(HighestStack, Stack, FinalStack):- Stack > HighestStack, FinalStack = Stack.
 compareStack(HighestStack, _, HighestStack).
 
+initBoard(GameState, 1):- generateBoard(GameState, 9, 9, 18, 6, 6, []).   % size: 6x6
+initBoard(GameState, 2):- generateBoard(GameState, 18, 18, 18, 6, 9, []). % size: 6x9
+initBoard(GameState, 3):- generateBoard(GameState, 27, 27, 27, 9, 9, []). % size: 9x9
+
+generateBoard(GameState, 0, 0, 0, _, 0, Board):- GameState = Board.
+generateBoard(GameState, BlackP, WhiteP, GreenP, NoCols, NoRows, Board):-
+        Col=NoCols,
+        generateRow(BP, WP, GP, BlackP, WhiteP, GreenP, Col, [], FinalRow),
+        append(Board, FinalRow, Row),
+        NoRow is (NoRows-1),
+        generateBoard(GameState, BP, WP, GP, NoCols, NoRow, Row).
+
+generateRow(BlackP, WhiteP, GreenP, BlackP, WhiteP, GreenP, 0, Row, FinalRow):- FinalRow = [Row].
+generateRow(BlackP, WhiteP, GreenP, BP, WP, GP, NoCols, Row, FinalRow):-
+        random(0, 3, Piece),
+        generateCell(Piece, BP, WP, GP, NBP, NWP, NGP, Cell),
+        append(Row, [Cell], NewRow),
+        Col is (NoCols-1),
+        generateRow(BlackP, WhiteP, GreenP, NBP, NWP, NGP, Col, NewRow, FinalRow).
+
+generateCell(0, BlackP, WhiteP, GreenP, BP, WP, GP, Cell):- generateGreenPiece(BlackP, WhiteP, GreenP, BP, WP, GP, Cell). 
+generateCell(1, BlackP, WhiteP, GreenP, BP, WP, GP, Cell):- generateBlackPiece(BlackP, WhiteP, GreenP, BP, WP, GP, Cell).
+generateCell(2, BlackP, WhiteP, GreenP, BP, WP, GP, Cell):- generateWhitePiece(BlackP, WhiteP, GreenP, BP, WP, GP, Cell).
+
+generateGreenPiece(BlackP, WhiteP, 0, BP, WP, GP, Cell):-
+        random(0, 3, Piece),
+        generateCell(Piece, BlackP, WhiteP, 0, BP, WP, GP, Cell).
+generateGreenPiece(BlackP, WhiteP, GreenP, BP, WP, GP, Cell):-
+        Cell = [1, 1, 1],
+        BP = BlackP,
+        WP = WhiteP,
+        GP is (GreenP-1).
+
+generateBlackPiece(0, WhiteP, GreenP, BP, WP, GP, Cell):-
+        random(0, 3, Piece),
+        generateCell(Piece, 0, WhiteP, GreenP, BP, WP, GP, Cell).
+generateBlackPiece(BlackP, WhiteP, GreenP, BP, WP, GP, Cell):-
+        Cell = [2, 0, 1],
+        WP = WhiteP,
+        GP = GreenP,
+        BP is (BlackP-1).
+
+generateWhitePiece(BlackP, 0, GreenP, BP, WP, GP, Cell):-
+        random(0, 3, Piece),
+        generateCell(Piece, BlackP, 0, GreenP, BP, WP, GP, Cell).
+generateWhitePiece(BlackP, WhiteP, GreenP, BP, WP, GP, Cell):-
+        Cell = [3, 0, 1],
+        BP = BlackP,
+        GP = GreenP,
+        WP is (WhiteP-1).

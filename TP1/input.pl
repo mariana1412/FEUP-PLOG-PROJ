@@ -61,7 +61,6 @@ readMenuOption(Option):-
         get_char(OpChar), get_char(_),
         checkMenuOption(OpChar, Option).
 
-
 getPlayerOptions(Player):-
         nl, displayMenu,
         readMenuOption(Option),
@@ -95,3 +94,14 @@ getLevelOption(Player, Level):-
 getLevelOption(Player, Level):-
         write('\nInvalid Input.'), nl,
         getLevelOption(Player, Level).
+
+getInitialGameState(GameState):-
+        displayBoardSizes,
+        get_char(Option), get_char(_),
+        option(Option, Op),
+        Op > 0, Op < 4,
+        initBoard(GameState, Op).
+
+getInitialGameState(GameState):-
+        write('\nInvalid Input.'), nl,
+        getInitialGameState(GameState).

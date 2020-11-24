@@ -3,7 +3,7 @@ display_game(GameState, Player) :-
         write('====================================================================\n'),
         printPlayersPoints(Player),
         Player = [[Color|_]|_],
-        printBoard(GameState, 6, Color).
+        printBoard(GameState, Color).
 
 %Game cycle until there is no possible move
 gameLoop(GameState, Player):- isFinished(GameState, Player), !, finishGame(GameState).
