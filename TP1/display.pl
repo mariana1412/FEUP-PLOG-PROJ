@@ -135,6 +135,18 @@ displayValidMove([H|T], N):-
         displayColRow(Col, Row), write('  '),
         NextN is (N+1), displayValidMove(T, NextN).
 
+displayMovePlayer([[0, _, 0], _], Move):-
+        nl, write('Black plays '),
+        displayMove(Move), nl, nl.
+
+displayMovePlayer([[1, _, 0], _], Move):-
+        nl, write('White plays '),
+        displayMove(Move), nl, nl.
+
+displayMovePlayer(_, Move):-
+        nl, write('Computer plays '),
+        displayMove(Move), nl, nl.
+
 displayMove([[Ci, Ri], [Cf, Rf]]):-
         displayColRow(Ci, Ri),
         write(' -> '), displayColRow(Cf, Rf).

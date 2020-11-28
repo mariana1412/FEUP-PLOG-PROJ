@@ -26,6 +26,8 @@ processTurn(Player, GameState, [GameState, Player]):- write('\nPlayer does not h
 move(Player, GameState, NewGameState):-
         Player = [[_, _, 0], _], !,
         readMove(Player, GameState, StartCell, StartCol, StartRow, EndCell, EndCol, EndRow), !,
+        Move = [[StartCol, StartRow], [EndCol, EndRow]], nl,
+        displayMovePlayer(Player, Move), sleep(1),
         updatePoints(Player, StartCell, EndCell, NewPlayer),
         updateBoardGame(StartCell, StartCol, StartRow, EndCell, EndCol, EndRow, GameState, NewState),
         NewGameState = [NewState, NewPlayer].
@@ -35,7 +37,7 @@ move(Player, GameState, NewGameState):-
         nl, write('Computer is thinking...'), nl,
         choose_move(GameState, Player, Level, Move),
         sleep(2),
-        nl, write('Computer plays '), displayMove(Move), nl, nl,
+        displayMovePlayer(Player, Move),
         Move = [[StartCol, StartRow], [EndCol, EndRow]],
         getCell(GameState, StartCol, StartRow, StartCell),
         getCell(GameState, EndCol, EndRow, EndCell),

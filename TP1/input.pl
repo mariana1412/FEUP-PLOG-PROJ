@@ -1,9 +1,15 @@
 %reads column and validates it
-readColumn(Column, NoCol):- write('Column: '), get_char(C), C \= '\n', peek_char(Y), skip_line, Y == '\n', column(C, Col), Col \= -1, Col < NoCol, Column = Col.
+readColumn(Column, NoCol):- 
+        write('Column: '), get_char(C),
+        C \= '\n', peek_char(Y), skip_line, Y == '\n',
+        column(C, Col), Col \= -1, Col < NoCol, Column = Col.
 readColumn(Column, NoCol):- write('Column is invalid. Try again!\n'), readColumn(Column, NoCol).
 
 %reads row and validates it
-readRow(Row, NoRow):- write('Row: '), get_char(R), R \= '\n', peek_char(Y), skip_line, Y == '\n', row(R, RAux), RAux \= -1, RAux < NoRow, Row = RAux.
+readRow(Row, NoRow):- 
+        write('Row: '), get_char(R),
+        R \= '\n', peek_char(Y), skip_line, Y == '\n',
+        row(R, RAux), RAux \= -1, RAux < NoRow, Row = RAux.
 readRow(Row, NoRow):- write('Row is invalid. Try again!\n'), readRow(Row, NoRow).
 
 %reads cell 
@@ -36,23 +42,21 @@ checkOption(Option, ValidMoves, Op):-
 
 %reads end cell with error handling
 readEnd(Cell, Column, Row, GameState, ValidMoves):- 
-        displayValidMoves(ValidMoves), nl,
         write('Where are you moving it to? Insert the number of the chosen cell: '),
-        readOption(ValidMoves, Column, Row),
-        write('Column: '), write(Column), write(' Row: '), write(Row), nl,
+        readOption(ValidMoves, Column, Row), 
         getCell(GameState, Column, Row, Cell).
 
 readEnd(Cell, Column, Row, GameState, ValidMoves):-
-        write('\nInvalid input. '),
+        write('Invalid input. '),
         readEnd(Cell, Column, Row, GameState, ValidMoves).
 
 %reads player move making sure it is a possible one
 readMove(Player, GameState, StartCell, StartColumn, StartRow, EndCell, EndColumn, EndRow):-
         nl, readStart(StartC, StartCol, StartR, Player, GameState, ValidMoves),
-        write('You chose piece '), displayColRow(StartCol, StartR), write('.\n'),
+        write('You chose piece '), displayColRow(StartCol, StartR), write('.\n'), displayValidMoves(ValidMoves), nl, !,
         readEnd(EndC, EndCol, EndR, GameState, ValidMoves),
-        StartCell=StartC, StartColumn=StartCol, StartRow=StartR,
-        EndCell=EndC, EndColumn=EndCol, EndRow=EndR.
+        StartCell = StartC, StartColumn=StartCol, StartRow=StartR,
+        EndCell = EndC, EndColumn=EndCol, EndRow=EndR.
 
 checkMenuOption(OpChar, Option):-
         option(OpChar, Option),
