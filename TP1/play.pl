@@ -19,36 +19,42 @@ nextMove(GameState, Player, NewPlayer, NewState):-
         changePlayer(NewP, NewPlayer),
         display_game(NewState, NewPlayer).        
 
-processTurn(Player, GameState, NewGameState):- hasAvailableMoves(GameState, Player), move(Player, GameState, NewGameState).
+processTurn(Player, GameState, NewGameState):- 
+        hasAvailableMoves(GameState, Player),
+        getMove(GameState, Player, Move),
+        move(Move, [GameState, Player], NewGameState).
 processTurn(Player, GameState, [GameState, Player]):- write('\nPlayer does not have available moves! Skipping turn!\n\n'), sleep(1).
 
-%Processes a new move, update points and board
-move(Player, GameState, NewGameState):-
+getMove(GameState, Player, Move):-
         Player = [[_, _, 0], _], !,
         readMove(Player, GameState, StartCell, StartCol, StartRow, EndCell, EndCol, EndRow), !,
-        Move = [[StartCol, StartRow], [EndCol, EndRow]], nl,
-        displayMovePlayer(Player, Move), sleep(1),
-        updatePoints(Player, StartCell, EndCell, NewPlayer),
-        updateBoardGame(StartCell, StartCol, StartRow, EndCell, EndCol, EndRow, GameState, NewState),
-        NewGameState = [NewState, NewPlayer].
+        M = [[StartCol, StartRow], [EndCol, EndRow]], nl,
+        displayMovePlayer(Player, M),
+        Move = [[StartCell, StartCol, StartRow], [EndCell, EndCol, EndRow]],
+        sleep(1).
 
-move(Player, GameState, NewGameState):-
+getMove(GameState, Player, Move):-
         Player = [[_, _, Level], _],
         nl, write('Computer is thinking...'), nl,
-        choose_move(GameState, Player, Level, Move),
+        choose_move(GameState, Player, Level, M),
         sleep(2),
-        displayMovePlayer(Player, Move),
-        Move = [[StartCol, StartRow], [EndCol, EndRow]],
+        displayMovePlayer(Player, M),
         getCell(GameState, StartCol, StartRow, StartCell),
         getCell(GameState, EndCol, EndRow, EndCell),
-        updatePoints(Player, StartCell, EndCell, NewPlayer),
-        updateBoardGame(StartCell, StartCol, StartRow, EndCell, EndCol, EndRow, GameState, NewState),
-        NewGameState = [NewState, NewPlayer],
+        Move = [[StartCell, StartCol, StartRow], [EndCell, EndCol, EndRow]],
         sleep(3).
 
-move(Player, GameState, NewGameState):-
+getMove(GameState, Player, Move):-
         write('Invalid move. Try again!\n'),
-        move(Player, GameState, NewGameState).
+        getMove(GameState, Player, Move).
+
+%Processes a new move, update points and board
+move(Move, GameState, NewGameState):-
+        GameState = [CurrentState, Player],
+        Move = [[StartCell, StartCol, StartRow], [EndCell, EndCol, EndRow]],
+        updatePoints(Player, StartCell, EndCell, NewPlayer),
+        updateBoardGame(StartCell, StartCol, StartRow, EndCell, EndCol, EndRow, CurrentState, NewState),
+        NewGameState = [NewState, NewPlayer].
 
 hasAvailableMoves(GameState, Player):-
         valid_moves(GameState, Player, ListOfMoves), !,
