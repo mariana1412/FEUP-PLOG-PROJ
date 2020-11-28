@@ -21,7 +21,7 @@ nextMove(GameState, Player, NewPlayer, NewState):-
 
 processTurn(Player, GameState, NewGameState):- 
         hasAvailableMoves(GameState, Player),
-        getMove(GameState, Player, Move),
+        getMove(GameState, Player, Move), !,
         move(Move, [GameState, Player], NewGameState).
 processTurn(Player, GameState, [GameState, Player]):- write('\nPlayer does not have available moves! Skipping turn!\n\n'), sleep(1).
 
@@ -36,9 +36,10 @@ getMove(GameState, Player, Move):-
 getMove(GameState, Player, Move):-
         Player = [[_, _, Level], _],
         nl, write('Computer is thinking...'), nl,
-        choose_move(GameState, Player, Level, M),
+        choose_move(GameState, Player, Level, M), !,
         sleep(2),
         displayMovePlayer(Player, M),
+        M = [[StartCol, StartRow], [EndCol, EndRow]],
         getCell(GameState, StartCol, StartRow, StartCell),
         getCell(GameState, EndCol, EndRow, EndCell),
         Move = [[StartCell, StartCol, StartRow], [EndCell, EndCol, EndRow]],

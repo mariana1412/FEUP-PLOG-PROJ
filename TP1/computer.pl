@@ -14,21 +14,17 @@ value(GameState, Player, Value):-
 bestMove(_, _, [], Move, FinalMove, Value, FinalValue):- FinalValue = Value, FinalMove = Move.
 
 bestMove(GameState, Player, [H | T], Move, FinalMove, Value, FinalValue):-
-        %write('evaluating: '), print(H), nl,
         evaluateMove(GameState, Player, H, MoveValue),
         compareValue(MoveValue, Value, H, Move, CurrentMove, CurrentValue),
-        %write('moveValue: '), print(MoveValue), write(' current Value: '), print(Value), nl,
         bestMove(GameState, Player, T, CurrentMove, FinalMove, CurrentValue, FinalValue).
 
 evaluateMove(GameState, [[_, P1Points, _], [_, P2Points, _]], Move, MoveValue):-
         Move = [[Ci, Ri], [Cf, Rf]],
         getCell(GameState, Ci, Ri, StartCell),
         getCell(GameState, Cf, Rf, EndCell),
-        %print(StartCell), write(' to '), print(EndCell), nl,
         updatePoints([[_, P1Points, _], [_, P2Points, _]], StartCell, EndCell, [[_, NewP1Points, _], [_, NewP2Points, _]]),
         P1PointDiff is (NewP1Points-P1Points),
         P2PointDiff is (NewP2Points-P2Points),
-        %write('Calculation: '), write(P1PointDiff), write(' and '), write(P2PointDiff), nl,
         calculateValue(P1PointDiff, P2PointDiff, StartCell, EndCell, MoveValue).
 
 calculateValue(0, 0, [X | _], [X | _], Value):-

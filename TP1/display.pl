@@ -16,6 +16,7 @@ column('H', 7). column('h', 7).
 column('I', 8). column('i', 8).
 column(_, -1).
 
+%translates the 
 row('1', 0).
 row('2', 1).
 row('3', 2).

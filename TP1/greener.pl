@@ -8,9 +8,8 @@
 :-include('play.pl').
 :-include('computer.pl').
 
-%main function -> it initializes the board and
+%main function -> displays menus, initializes player and GameState according to the selected options and calls the game loop
 play :- getPlayerOptions(Player), nl,
         getInitialGameState(GameState),
         display_game(GameState, Player),
         gameLoop(GameState, Player).
-
