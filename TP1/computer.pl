@@ -1,23 +1,27 @@
+%returns a random valid move 
 choose_move(GameState, Player, 1, Move):-
         valid_moves(GameState, Player, ListOfMoves),
         length(ListOfMoves, Len),
         random(0, Len, MoveNumber),
         nth0(MoveNumber, ListOfMoves, Move).
 
+%returns the best move in the current state
 choose_move(GameState, Player, 2, Move):-
         value(GameState, Player, Move).
 
+%gets all the available moves and chooses the best one
 value(GameState, Player, Value):-
         valid_moves(GameState, Player, ListOfMoves),
         bestMove(GameState, Player, ListOfMoves, [], Value, [-1, -2], _).
 
+%gets the best move from the list of available moves 
 bestMove(_, _, [], Move, FinalMove, Value, FinalValue):- FinalValue = Value, FinalMove = Move.
-
 bestMove(GameState, Player, [H | T], Move, FinalMove, Value, FinalValue):-
         evaluateMove(GameState, Player, H, MoveValue),
         compareValue(MoveValue, Value, H, Move, CurrentMove, CurrentValue),
         bestMove(GameState, Player, T, CurrentMove, FinalMove, CurrentValue, FinalValue).
 
+%evaluates each move
 evaluateMove(GameState, [[_, P1Points, _], [_, P2Points, _]], Move, MoveValue):-
         Move = [[Ci, Ri], [Cf, Rf]],
         getCell(GameState, Ci, Ri, StartCell),
@@ -27,18 +31,13 @@ evaluateMove(GameState, [[_, P1Points, _], [_, P2Points, _]], Move, MoveValue):-
         P2PointDiff is (NewP2Points-P2Points),
         calculateValue(P1PointDiff, P2PointDiff, StartCell, EndCell, MoveValue).
 
-calculateValue(0, 0, [X | _], [X | _], Value):-
-        Value = [0, -1].
+%calculates the value of a move
+calculateValue(0, 0, [X | _], [X | _], [0, -1]).
+calculateValue(0, 0, _, _, [0, 1]).
+calculateValue(1, 0, _, _, [1, 0]).
+calculateValue(V, _, _, _, [V, 1]).
 
-calculateValue(0, 0, _, _, Value):-
-        Value = [0, 1].
-
-calculateValue(1, 0, _, _, Value):-
-        Value = [1, 0].
-
-calculateValue(V, _, _, _, Value):-
-        Value = [V, 1].
-
+%compares the values ​​of the current move and the best current move at the moment
 compareValue([Vi, Ei], [Cv, _], Move, _, FinalMove, FinalValue):-
         Vi > Cv,
         FinalMove = Move,
@@ -56,6 +55,7 @@ compareValue([Vi, Ei], [_, Ce], Move, _, FinalMove, FinalValue):-
 
 compareValue([Vi, Ei], [Cv, Ce], Move, CurrentMove, FinalMove, FinalValue):-
         randomChange([Vi, Ei], [Cv, Ce], Move, CurrentMove, FinalMove, FinalValue).
+
 
 randomChange(_, [Cv, Ce], _, CurrentMove, FinalMove, FinalValue):-
         random(0, 2, 0),
