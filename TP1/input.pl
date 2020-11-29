@@ -102,10 +102,10 @@ getLevelOption(Player, Level):-
 
 getInitialGameState(GameState):-
         displayBoardSizes,
-        get_char(Option), Option \= '\n', peek_char(Y), skip_line, Y == '\n',
-        option(Option, Op),
-        Op > 0, Op < 4,
-        initBoard(GameState, Op).
+        get_char(OpChar), OpChar \= '\n', peek_char(Y), skip_line, Y == '\n',
+        option(OpChar, Option),
+        Option > 0, Option < 4,
+        initBoard(GameState, Option).
 
 getInitialGameState(GameState):-
         write('\nInvalid Input.'), nl,

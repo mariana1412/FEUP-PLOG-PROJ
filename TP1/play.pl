@@ -1,10 +1,3 @@
-%prints the current game state
-display_game(GameState, Player) :- 
-        write('====================================================================\n'),
-        printPlayersPoints(Player),
-        Player = [[Color|_]|_],
-        printBoard(GameState, Color).
-
 %Game cycle until there is no possible move
 gameLoop(GameState, Player):- isFinished(GameState, Player), !, finishGame(GameState).
 gameLoop(GameState, Player):-
@@ -22,7 +15,7 @@ nextMove(GameState, Player, NewPlayer, NewState):-
 processTurn(Player, GameState, NewGameState):- 
         hasAvailableMoves(GameState, Player),
         getMove(GameState, Player, Move), !,
-        move(Move, [GameState, Player], NewGameState).
+        move([GameState, Player], Move, NewGameState).
 processTurn(Player, GameState, [GameState, Player]):- write('\nPlayer does not have available moves! Skipping turn!\n\n'), sleep(1).
 
 getMove(GameState, Player, Move):-
@@ -50,7 +43,7 @@ getMove(GameState, Player, Move):-
         getMove(GameState, Player, Move).
 
 %Processes a new move, update points and board
-move(Move, GameState, NewGameState):-
+move(GameState, Move, NewGameState):-
         GameState = [CurrentState, Player],
         Move = [[StartCell, StartCol, StartRow], [EndCell, EndCol, EndRow]],
         updatePoints(Player, StartCell, EndCell, NewPlayer),

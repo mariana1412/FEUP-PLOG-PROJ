@@ -34,6 +34,13 @@ option('3', 3).
 option('4', 4).
 option(_, -1).
 
+%prints the current game state
+display_game(GameState, Player) :- 
+        write('====================================================================\n'),
+        printPlayersPoints(Player),
+        Player = [[Color|_]|_],
+        printBoard(GameState, Color).
+
 %prints the row coordinate
 printNumber(N):- Number is (N+1), write(Number), write('|').
 
