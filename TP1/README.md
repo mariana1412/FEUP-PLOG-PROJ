@@ -2,14 +2,32 @@
 
 ## Group T3_Greener2
 
+
 | Name             | Number    | E-Mail             |
 | ---------------- | --------- | ------------------ |
 | Daniel Garcia Lima Sarmento da Silva    | 201806524 |up201806524@fe.up.pt|
 | Mariana Almeida Truta    | 201806543 |up201806543@fe.up.pt|
 
 ----
+## Instalation and Execution
+---
+### SICStus Prolog Instalation 
 
+* [Linux](https://sicstus.sics.se/download4.html#unix)
+* [Windows](https://sicstus.sics.se/download4.html#win32)
+
+### Execution
+
+To play the game:
+
+* run SICStus Prolog;
+* go to `File > Consult` and select the file [greener.pl](LINK
+* *Alternatively*: run `consult('path\to\greener.pl')`.
+* run `play.` in the console to start the game.
+
+----
 ## [Greener](https://www.boardgamegeek.com/boardgame/226081/greener)
+---
 
 ### Description
 
@@ -33,36 +51,107 @@ The **game ends** when all players pass in succession. The player with the **mos
 
 [Rules Book](https://nestorgames.com/rulebooks/GREENGREENERGREENEST_EN.pdf)
 
-----
+---
+## Game Logic
+---
 
-## Game State Representation
+### **Game State Representation**
 
-### **Important information**
+**Important information**
 
 At any point during the game, it is crucial that both players know these things:
 
 * Whose **turn** it is;
-* For each board space:
+* For each board cell:
     - The **color** of the piece at the top of the stack;
     - The amount of **points** (green pieces in the stack);
     - The stack **height** (number of pieces in the stack).
 
 We also provided the **points** both players currently have.
 
-### **How we did it**
+**How we did it**
 
-By calling ***play/0***, an initial board is setup (this board is a valid initial board, and was hardcoded) and shown to the players:
+* GameState: a list of rows;
+* Row: a list of cells;
+* Cell: a list of 3 values: 
+    - Color of the top piece:
+        * 0 - **Empty** cell
+        * 1 - **Green** piece
+        * 2 - **Black** piece
+        * 3 - **White** piece
+    - amount of green pieces in the stack (points)
+    - stack height.
+ 
+This is how that list looks like, internally (for a 6x6 game):
 
-![initial Board](images/initial.png)
+```prolog
+[
+[[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [2, 1, 2]],
+[[0, 0, 0], [0, 0, 0], [0, 0, 0], [2, 4, 7], [0, 0, 0], [0, 0, 0]],
+[[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [1, 1, 1]],
+[[0, 0, 0], [0, 0, 0], [3, 7, 17], [0, 0, 0], [0, 0, 0], [0, 0, 0]],
+[[0, 0, 0], [1, 1, 1], [0, 0, 0], [0, 0, 0], [1, 1, 1], [3, 0, 1]],
+[[2, 1, 2], [0, 0, 0], [3, 1, 2], [0, 0, 0], [1, 1, 1], [3, 0, 1]]
+]
+```
 
-The ***play/0*** predicate, first of all, calls the ***initial(-GameState)*** predicate, generating the board (a 3d list) that we can see in the image above. Then, it initializes de Player list, composed of two sublists, each with the number of player (**0 for Black**, **1 for White**) and the correspondent current points. This list maintains the next Player as its **head**.
+We also mantain a **Player** list, which is a list of 2 Player sublists. The first player corresponds to whose turn it is. These sublists have 3 values:
+
+* the player's color:
+    - 0 - Black
+    - 1 - White
+* the player's current points, updated every move;
+* the player's level:
+    - 0 - **Human**
+    - 1 - Computer **Random**
+    - 2 - Computer **Smart**
+
+A **Player** list, at the beginning of a game of Human vs Computer Random, would look like this:
+
+```prolog
+[[0, 0, 0], [1, 0, 1]]
+```
+
+
+### Game State Visualization
+
+The `play/0` predicate gets, from the menus shown below, the information about the players and the board, initializes both, displays that information, and finally calls the game loop.
 
 After initializing the game components, the ***play/0*** predicate calls two display predicates, before calling the ***gameLoop*** predicate. These predicates are:
 
 1. ***printPlayersPoints(Player)***, which takes the Player List and prints what can be seen above the board in the image.
 2. ***display_game(+GameState, +Player)***, which takes the board initialized previously and the Player list.
 
-#### **Displaying the board**
+**Menus**
+
+Upon starting the game, the player selection menu is displayed:
+
+![Initial Menu](images/initialMenu.png)
+
+If the option selected involves a computer player, there is a menu to select its level:
+
+![Level Menu](images/levelMenu.png)
+
+After all the player info is gathered, the board selection menu is displayed:
+
+![Board Menu](images/boardMenu.png)
+
+All these inputs are read one character at a time, and if any of them fail, this message will be printed and the user will be prompted again. For example:
+
+![Invalid input](images/invalidInput.png)
+
+Now, the initial board is generated and displayed:
+
+* 6x6 board
+![6x6 initial board](images/initialBoard6x6.png)
+* 9x6 board
+![9x6 initial board](images/initialBoard9x6.png)
+* 9x9 board
+![9x9 initial board](images/initialBoard9x9.png)
+
+
+
+**Displaying the board**
 
 The ***display_game(+GameState, +Player)*** calls the ***printBoard(GameState, N, Player)*** (in [display.pl](display.pl)) which takes the **Board** (GameState), the **board size** (we are using 6x6) and the **color** of the next player, and calls subsequent recursive predicates in order to produce the result seen in the images. It starts by displaying the **header** (with an accompanying key, to interpret the board cells), and continues by displaying, **line by line**, each cell.
 
@@ -76,33 +165,29 @@ If we are printing the first board line, we use the ***printInfo/2*** predicate 
 
 A middle and final look to the board isn't that much different from the initial board aspect, but we do have to solve the double digit points/stack height problem that arises from our display method:
 
-![mid](images/mid.png)
 
-![final](images/final.png)
+### List of Valid Moves
 
-----
+Lorem
 
-## How to run the program
+### Move Execution
 
-To play the game:
+Lorem
 
-* consult **greener.pl** in SICStus Prolog;
-* type **'play.'** (without the quotation marks) in the console to start the game.
+### Game End
 
-It has to be inserted:
+Lorem
 
-* a **letter**, if it is a **column** input (for example, type -> 'A', if you want to select column A);
+### Board Evaluation
 
-* a **number**, if it is a **row** input (for example, type -> 2, if you want to select the 2nd row).
+Lorem
 
-----
+### Computer's Move
 
-## Notes
+Lorem
 
-At this point, before playing the game, it is important to know that:
+---
+## Conclusions
+---
 
-* the game doesn't have a game over, so it has to be **manually** stopped;
-
-* the program doen't work correctly if you press more that one charecter at a time;
-
-* move's validation is **not** complete.
+Lorem
