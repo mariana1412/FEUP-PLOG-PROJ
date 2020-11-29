@@ -64,22 +64,22 @@ printCellPointsStack([Color, Points, Stack]) :-
         printPoints(Color, Points),
         printStack(Color, Stack).
 
+%prints the color of all cells in a row
 printLineColor([]).
 printLineColor([Cell | Line]):- printCellColor(Cell), printLineColor(Line).
 
+%prints points and stack height of all cells in a row
 printLinePointsStack([]).
 printLinePointsStack([Cell | Line]):- printCellPointsStack(Cell), printLinePointsStack(Line).
 
 %prints a dashed separator
 printSeparator(1, 0):- nl.
 printSeparator(1, NoCol):- write('-----|'), Col is (NoCol-1), printSeparator(1, Col).
-
 printSeparator(2, 0).
 printSeparator(2, NoCol):- write('     |'), Col is (NoCol-1), printSeparator(2, Col).
 
 %prints the board, line by line
 printTab([], NoCol, NoRow, NoRow, _):- write(' |'), printSeparator(1, NoCol).
-
 printTab([Line|B], NoCol, NoRow, CurrentRow, Player):- 
         write(' |'),
         Col=NoCol,
@@ -94,7 +94,7 @@ printTab([Line|B], NoCol, NoRow, CurrentRow, Player):-
         printLinePointsStack(Line), nl,
         N1 is CurrentRow+1, printTab(B, NoCol, NoRow, N1, Player).
 
-%o tabuleiro vai ser de tamanho NxN
+%prints the board and headings
 printBoard(X, Player):- sizeBoard(X, NoCol, NoRow), printHeader(NoCol), printTab(X, NoCol, NoRow, 0, Player).
 
 %prints the board columns and cell key 
@@ -107,7 +107,7 @@ printHeader(9):-
     write('\n    A     B     C     D     E     F     G     H     I    '),
     write('Cell Format: Color/Points/StackHeight\n').
 
-%prints the player turn on the first line
+%prints the player turn on the forth line
 printInfo(4, 0):- write(' It is black\'s turn!').
 printInfo(4, 1):- write(' It is white\'s turn!').
 printInfo(_N, _Player).
@@ -124,18 +124,22 @@ printBlackPoints(Points):- write('\n  Black: '), write(Points), write(' points\n
 printWhitePoints(1):- write('  White: 1 point\n\n').
 printWhitePoints(Points):- write('  White: '), write(Points), write(' points\n\n').
 
+%prints winner message
 displayGameOver(0):- write('Black is the winner! Congrats!\n').
 displayGameOver(1):- write('White is the winner! Congrats!\n').
 displayGameOver(2):- write('I\'ts a tie!\n').
 
+%prints points and highest stack of each player
 displayPointsStack(BlackPoints, BlackHighestStack, WhitePoints, WhiteHighestStack):-
         write('Black ----> Points = '), write(BlackPoints), write(', Highest Stack: '), write(BlackHighestStack), nl,
         write('White ----> Points = '), write(WhitePoints), write(', Highest Stack: '), write(WhiteHighestStack), nl.
 
+%prints a list of valid moves in a specific format
 displayValidMoves(Moves):-
         write('You can move that piece to: '),
         displayValidMove(Moves, 1), nl.
 
+%prints option number and the col and row of the valid move
 displayValidMove([], _).
 displayValidMove([H|T], N):-
         write(N), write('.'),
@@ -143,26 +147,22 @@ displayValidMove([H|T], N):-
         displayColRow(Col, Row), write('  '),
         NextN is (N+1), displayValidMove(T, NextN).
 
-displayMovePlayer([[0, _, 0], _], Move):-
-        nl, write('Black plays '),
-        displayMove(Move), nl, nl.
+%prints message with the player and chosen move
+displayMovePlayer([[0, _, 0], _], Move):- nl, write('Black plays '), displayMove(Move), nl, nl.
+displayMovePlayer([[1, _, 0], _], Move):- nl, write('White plays '), displayMove(Move), nl, nl.
+displayMovePlayer(_, Move):- nl, write('Computer plays '), displayMove(Move), nl, nl.
 
-displayMovePlayer([[1, _, 0], _], Move):-
-        nl, write('White plays '),
-        displayMove(Move), nl, nl.
-
-displayMovePlayer(_, Move):-
-        nl, write('Computer plays '),
-        displayMove(Move), nl, nl.
-
+%prints a move represented by starting and ending column and row
 displayMove([[Ci, Ri], [Cf, Rf]]):-
         displayColRow(Ci, Ri),
         write(' -> '), displayColRow(Cf, Rf).
 
+%prints column and row
 displayColRow(Col, Row):-
         column(CharCol, Col), row(CharRow, Row),
         write(CharCol), write(CharRow).
 
+%prints the first menu
 displayMenu:-
         write('===================================================================='), nl,
         write('|                                                                  |'), nl,
@@ -176,6 +176,7 @@ displayMenu:-
         write('===================================================================='), nl,
         write('How do you want to play? Insert the number of the chosen option: ').
         
+%prints a menu with the options for the board size
 displayBoardSizes:-
         write('===================================================================='), nl,
         write('|                                                                  |'), nl,
