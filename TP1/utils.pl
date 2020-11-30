@@ -123,6 +123,16 @@ getPlayerPieces(GameState, Index, BlackP, BlackPieces, WhiteP, WhitePieces, MaxC
         NextIndex is (Index+1),
         getPlayerPieces(GameState, NextIndex, Black, BlackPieces, White, WhitePieces, MaxCol, MaxRow). 
 
+
+%deletes and empty sublist from a list
+deleteOne(X, L, L1):- append(La, [X|Lb], L), append(La, Lb, L1). 
+
+%deletes all empty sublists from a list
+deleteEmptyList(L1, L2) :- L2 = L1, \+member([], L1).
+deleteEmptyList(L1, L2) :- 
+        deleteOne([], L1, L),
+        deleteEmptyList(L, L2). 
+
 %processes cell by placing it in the respective type
 processCell(Cell, BlackP, WhiteP):- Cell = [2|_], BlackP = Cell, WhiteP = [].
 processCell(Cell, BlackP, WhiteP):- Cell = [3|_], WhiteP = Cell, BlackP = [].

@@ -33,13 +33,13 @@ getMove(GameState, Player, Move):-
         Player = [[_, _, Level], _],
         nl, write('Computer is thinking...'), nl,
         choose_move(GameState, Player, Level, M), !,
-        sleep(2),
+        %sleep(2),
         displayMovePlayer(Player, M),
         M = [[StartCol, StartRow], [EndCol, EndRow]],
         getCell(GameState, StartCol, StartRow, StartCell),
         getCell(GameState, EndCol, EndRow, EndCell),
         Move = [[StartCell, StartCol, StartRow], [EndCell, EndCol, EndRow]],
-        sleep(3).
+        sleep(1).
 
 getMove(GameState, Player, Move):-
         write('Invalid move. Try again!\n'),

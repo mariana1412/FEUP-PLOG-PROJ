@@ -174,17 +174,48 @@ After all the player information is gathered, we move on to the board informatio
 
 Now, the initial board is generated and displayed:
 
-* 6x6 board
+* Initial Boards:
 
-    ![6x6 initial board](images/initialBoard6x6.png)
+    * 6x6 board
 
-* 9x6 board
+        ![6x6 initial board](images/initialBoard6x6.png)
 
-    ![9x6 initial board](images/initialBoard9x6.png)
+    * 9x6 board
 
-* 9x9 board
+        ![9x6 initial board](images/initialBoard9x6.png)
 
-    ![9x9 initial board](images/initialBoard9x9.png)
+    * 9x9 board
+
+        ![9x9 initial board](images/initialBoard9x9.png)
+
+* Intermediate Boards:
+
+    * 6x6 board
+
+        ![6x6 intermediate board](images/intermediateBoard6x6.png)
+
+    * 9x6 board
+
+        ![9x6 intermediate board](images/intermediateBoard9x6.png)
+
+    * 9x9 board
+
+        ![9x9 intermediate board](images/intermediateBoard9x9.png)
+
+
+* Final Boards:
+
+    * 6x6 board
+
+        ![6x6 final board](images/finalBoard6x6.png)
+
+    * 9x6 board
+
+        ![9x6 final board](images/finalBoard9x6.png)
+
+    * 9x9 board
+
+        ![9x9 final board](images/finalBoard9x9.png)
 
 The `display_game(GameState, Player)` predicate:
 
@@ -218,6 +249,46 @@ Our `valid_moves(GameState, Player, ListOfMoves)` predicate uses `sizeBoard` to 
 
 ### Move Execution
 
+Our `game_loop` predicate:
+
+1. checks if any of the players have valid moves, with `isFinished`
+
+    - if both players are out of valid moves, ends the game with `finishGame`
+
+2. calls the `nextMove` predicate, which:
+
+    - processes this turn's move, with `processTurn`
+
+        - checks if the current player has any available moves, with `hasAvailableMoves`
+
+        - obtains the move to be made, with `getMove`
+
+            - if the current player is a human, `readMove` is called:
+
+                1. reads the coordinates of the piece that the player wants to move and verifies if it belongs to the player;
+
+                2. displays the possible moves
+
+                3. reads the option chosen
+
+                ![Human choice](images/humanChoice.png)
+            
+            - if the current player is a computer, `choose_move` is called instead
+
+                ![Computer choice](images/computerChoice.png)
+
+        - obtains the new GameState and Player lists, with `move`
+
+        - if the player does not have any available moves, the turn is skipped:
+
+            ![Skip turn](images/skipTurn.png)
+    
+    - changes the current player, with `changePlayer`
+
+    - displays the new state of the game, with `display_game`
+
+3. calls itself until the game is finished
+
 In our `move(GameState, Move, NewGameState)` predicate, the *GameState* and *NewGameState* are composed of a list of length 2, with the board (GameState, as we refered to it earlier) as its first element, and the Player list as its second element. The Move comes in the format `[[StartCell, StartCol, StartRow], [EndCell, EndCol, EndRow]]` The predicate:
 
 1. updates the player's points, with `updatePoints`
@@ -233,8 +304,7 @@ In our `move(GameState, Move, NewGameState)` predicate, the *GameState* and *New
         - iterates through the columns until it finds the right one
         - substitutes the Cell list in those coordinates with the new Cell values
 
-TODO: CELL MOVES PROMPT
-      NO VALID MOVES
+
 
 ### Game End
 
@@ -255,13 +325,50 @@ Our `game_over(GameState, Winner)` predicate:
 
 ### Board Evaluation
 
-Lorem
+Our `value(GameState, Player, Value)` predicate returns in `Value` the best move for the current player, in the format `[[StartColumn, StartRow], [EndColumn, EndRow]]`. It obtains this move by:
+
+1. getting a list of valid moves, with `valid_moves`;
+
+2. getting the best move, with `bestMove(GameState, Player, ListOfValidMoves, CurrentBestMove, FinalMove, CurrentBestValue, FinalValue)`
+
+    - the value of each move is a list of two elements:
+        1. the point difference between before making the move and after making the move;
+        2. a number that represents the piece that was taken:
+            - -1 - a piece of the same color was taken
+            - 0 - a green piece was taken
+            - 1 - a piece of the opponent's color was taken
+
+    - this predicate is first called with an empty CurrentBestMove `[]` and a negative CurrentBestValue `[-1, -2]`
+
+    - it iterates through all valid moves, and:
+        1. calculates the move's Value
+
+        2. compares it with the CurrentBestValue and decides if it changes
+            - if the point difference is larger, it changes the CurrentBestMove
+            - if the point difference is smaller, it remains the same
+            - if the point difference is equal, the decision is made with the second number in the Value list, by the same criteria
+            - if both these numbers are equal, it randomly decides if it changes the CurrentBestMove
+
+        3. repeat until all moves have been processed
 
 ### Computer's Move
 
-Lorem
+Our `choose_move(GameState, Player, Level, Move)` chooses the move the computer is making, based on its level:
+
+1. Random - chooses a random move from the valid moves list
+
+2. Smart - chooses the move returned by the `value` predicate
 
 ---
 ## Conclusions
 
-findall, repeat
+In conclusion, the development of this game in PROLOG helped us learn and comprehend the inner workings of logic programming, as well as the syntax of the language.
+
+We did not encounter any issues, however we could improve this code by using the `repeat` and `findall`, `setof` or `bagof` predicates, as well as increasing the variables that the smart computer takes into account when deciding where to move.
+
+---
+## Bibliography
+
+* [SWI Prolog](https://www.swi-prolog.org/)
+* Moodle slides
+* Google Jamboards from TP classes
