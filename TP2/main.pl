@@ -4,11 +4,21 @@ operation(2, '*').
 operation(3, '/').
 
 %1st example at https://erich-friedman.github.io/puzzle/star/
-%each sublist contains both operations of a corner, starting with the top corner and proceeding clockwise
-example([
-    [1, 2], %top corner
-    [2, 1], %right corner
-    [2, 2], %bottom right corner
-    [0, 0], %bottom left corner
-    [2, 0]  %left corner
-    ]).
+%operations from top to bottom, left to right (see images/internalRepresentation.png)
+example([1, 2, 0, 2, 2, 1, 0, 2, 0, 2]).
+
+%operations from top to bottom, left to right (see images/internalRepresentation.png)
+equations(Star, Equations):-
+    Star = [O0, O1, O2, O3, O4, O5, O6, O7, O8, O9],
+    Equations = [
+        [A, O0, C, F],
+        [A, O1, D, G],
+        [B, O2, C, D],
+        [E, O3, D, C],
+        [B, O4, F, H],
+        [E, O5, G, H],
+        [I, O6, F, C],
+        [J, O7, G, D],
+        [I, O8, H, G],
+        [J, O9, H, F]
+    ].
