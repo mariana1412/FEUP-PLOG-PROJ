@@ -33,7 +33,7 @@ getMove(GameState, Player, Move):-
         Player = [[_, _, Level], _],
         nl, write('Computer is thinking...'), nl,
         choose_move(GameState, Player, Level, M), !,
-        %sleep(2),
+        sleep(2),
         displayMovePlayer(Player, M),
         M = [[StartCol, StartRow], [EndCol, EndRow]],
         getCell(GameState, StartCol, StartRow, StartCell),

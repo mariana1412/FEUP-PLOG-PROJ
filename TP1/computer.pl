@@ -56,7 +56,7 @@ compareValue([Vi, Ei], [_, Ce], Move, _, FinalMove, FinalValue):-
 compareValue([Vi, Ei], [Cv, Ce], Move, CurrentMove, FinalMove, FinalValue):-
         randomChange([Vi, Ei], [Cv, Ce], Move, CurrentMove, FinalMove, FinalValue).
 
-
+%decides randomly if it changes or mantains the currentMove, if both moves have the same value
 randomChange(_, [Cv, Ce], _, CurrentMove, FinalMove, FinalValue):-
         random(0, 2, 0),
         FinalMove = CurrentMove,
