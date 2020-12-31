@@ -22,8 +22,7 @@ restriction(-, X, Y, R):-
 restriction(*, X, Y, R):-
     X * Y #= R.
 
-restriction(-, X, Y, R):-
-    %X / Y #= R
+restriction(/, X, Y, R):-
     R * Y #= X.
 
 solve:-
