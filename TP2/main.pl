@@ -1,13 +1,31 @@
-:-use_module(library(clpfd)).
+:- use_module(library(random)).
+:- use_module(library(lists)).
+:- use_module(library(clpfd)).
+
+%2nd example at https://erich-friedman.github.io/puzzle/star/
+%operations from top to bottom, left to right (see images/internalRepresentation.png)
+example([+, *, *, +, -, *, +, +, +, /]).
 
 operation(0, +).
 operation(1, -).
 operation(2, *).
 operation(3, /).
 
-%1st example at https://erich-friedman.github.io/puzzle/star/
-%operations from top to bottom, left to right (see images/internalRepresentation.png)
-example([-, *, +, *, *, -, +, *, +, *]).
+generateOps(OpsSymbols):-
+    length(Ops, 10),
+    domain(Ops, 0, 3),
+    labeling([], Ops),
+    opsConvert(Ops, OpsSymbols).
+    
+opsConvert([], []).
+opsConvert([HCode | TCodes], [HSymbol | TSymbols]):-
+    operation(HCode, HSymbol),
+    opsConvert(TCodes, TSymbols).
+
+solveAll:-
+    generateOps(Ops),
+    solve(Ops),
+    fail.
 
 restriction(Op1, W, X, Op2, Y, Z):-
     restriction(Op1, W, X, Value),
@@ -22,12 +40,16 @@ restriction(-, X, Y, R):-
 restriction(*, X, Y, R):-
     X * Y #= R.
 
-restriction(-, X, Y, R):-
+restriction(/, X, Y, R):-
     %X / Y #= R
     R * Y #= X.
 
-solve:-
-    example(Ops),
+findSolution:-
+    repeat,
+    generateOps(Ops),
+    solve(Ops).
+
+solve(Ops):-
     Ops = [O0, O1, O2, O3, O4, O5, O6, O7, O8, O9],
     Vars = [A, B, C, D, E, F, G, H, I, J],
     domain(Vars, 0, 9),
