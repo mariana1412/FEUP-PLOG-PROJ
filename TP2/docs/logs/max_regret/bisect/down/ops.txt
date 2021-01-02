@@ -1,0 +1,1 @@
+[max_regret,bisect,down] took 2.829 seconds

@@ -1,0 +1,1 @@
+[occurrence,middle,up] took 2.757 seconds

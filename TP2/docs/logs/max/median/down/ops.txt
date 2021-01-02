@@ -1,0 +1,1 @@
+[max,median,down] took 3.185 seconds

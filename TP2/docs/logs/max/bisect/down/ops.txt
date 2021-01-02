@@ -1,0 +1,1 @@
+[max,bisect,down] took 3.088 seconds

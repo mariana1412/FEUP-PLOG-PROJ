@@ -1,0 +1,1 @@
+[ffc,bisect,down] took 2.846 seconds

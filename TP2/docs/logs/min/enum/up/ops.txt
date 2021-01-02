@@ -1,0 +1,1 @@
+[min,enum,up] took 2.758 seconds

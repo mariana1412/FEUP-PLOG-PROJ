@@ -1,0 +1,1 @@
+[leftmost,middle,up] took 2.689 seconds

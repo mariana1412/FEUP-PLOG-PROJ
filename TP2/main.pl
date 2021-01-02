@@ -23,7 +23,7 @@ generateOps(Points, OpsSymbols):-
     L is Points*2,
     length(Ops, L),
     domain(Ops, 0, 3),
-    labeling([], Ops),
+    labeling([leftmost, step, up], Ops),
     opsConvert(Ops, OpsSymbols).
 
 generateOps(Points, OpsSymbols, Params):-
@@ -269,3 +269,115 @@ testSearchStars(Points, OneSolution):-
 testSearchStars(Points, _):-
     Points>2,
     Points<7.
+
+getFileHeuristicsStar([S1, S2, S3], Path):-
+    atom_concat('docs/logs/', S1, P1),
+    atom_concat(P1, '/', P2),
+    atom_concat(P2, S2, P3),
+    atom_concat(P3, '/', P4),
+    atom_concat(P4, S3, P5),
+    atom_concat(P5, '/5points.txt', Path).
+
+
+getFileHeuristicsOps([S1, S2, S3], Path):-
+    atom_concat('docs/logs/', S1, P1),
+    atom_concat(P1, '/', P2),
+    atom_concat(P2, S2, P3),
+    atom_concat(P3, '/', P4),
+    atom_concat(P4, S3, P5),
+    atom_concat(P5, '/ops.txt', Path).
+
+getFilePoints(Points, 0, Path):-
+    number_chars(Points, PArray),
+    atom_chars(P0, PArray),
+    atom_concat('docs/logs/', P0, P1),
+    atom_concat(P1, '_points/all.txt', Path).
+
+getFilePoints(Points, 1, Path):-
+    number_chars(Points, PArray),
+    atom_chars(P0, PArray),
+    atom_concat('docs/logs/', P0, P1),
+    atom_concat(P1, '_points/one.txt', Path).
+
+saveLogsHeuristicsStar:-
+    generateSearch(Params),
+
+    getFileHeuristicsStar(Params, 1, Path),
+    open(Path, write, S),
+    current_output(Console),
+    set_output(S),
+    
+
+    statistics(walltime, _),
+    solveAll(5, 1, Params),
+    statistics(walltime, [_|T]),
+    format('~w took ~3d seconds', [Params, T]),
+
+    close(S),
+    set_output(Console),
+    format('~w took ~3d seconds', [Params, T]), nl,
+
+    fail.
+saveLogsHeuristicsStar.
+
+saveLogsOps:-
+    generateSearch(Params),
+
+    getFileHeuristicsOps(Params, Path),
+    open(Path, write, S),
+    current_output(Console),
+    set_output(S),
+    
+
+    statistics(walltime, _),
+    generateAllOps(5, Params),
+    statistics(walltime, [_|T]),
+    format('~w took ~3d seconds', [Params, T]),
+
+    close(S),
+    set_output(Console),
+    format('~w took ~3d seconds', [Params, T]), nl,
+
+    fail.
+saveLogsOps.
+
+points(3).
+points(4).
+points(5).
+points(6).
+
+saveLogsPoints:-
+    points(Points),
+
+    getFilePoints(Points, 0, Path),
+    open(Path, write, S),
+    current_output(Console),
+    set_output(S),
+    
+
+    statistics(walltime, _),
+    solveAll(Points, 0),
+    statistics(walltime, [_|T]),
+    format('~d Points, all solutions took ~3d seconds', [Points, T]),
+
+    close(S),
+    set_output(Console),
+    format('~d Points, all solutions took ~3d seconds', [Points, T]), nl,
+
+
+    getFilePoints(Points, 1, Path1),
+    open(Path1, write, S1),
+    current_output(Console),
+    set_output(S1),
+    
+
+    statistics(walltime, _),
+    solveAll(Points, 1),
+    statistics(walltime, [_|T1]),
+    format('~d Points, one solution took ~3d seconds', [Points, T1]),
+
+    close(S1),
+    set_output(Console),
+    format('~d Points, one solution took ~3d seconds', [Points, T1]), nl,
+    fail.
+saveLogsPoints.

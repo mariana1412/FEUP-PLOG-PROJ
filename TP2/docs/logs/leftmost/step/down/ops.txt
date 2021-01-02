@@ -1,0 +1,1 @@
+[leftmost,step,down] took 2.914 seconds

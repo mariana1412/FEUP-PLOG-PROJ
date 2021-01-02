@@ -1,0 +1,1 @@
+[max_regret,median,down] took 2.726 seconds

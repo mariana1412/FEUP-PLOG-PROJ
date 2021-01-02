@@ -1,0 +1,1 @@
+[max_regret,enum,down] took 2.787 seconds
