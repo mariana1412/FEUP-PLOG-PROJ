@@ -7,25 +7,43 @@
 example([+, *, *, +, -, *, +, +, +, /]).
 
 operation(0, +).
-operation(1, -).
-operation(2, *).
+operation(1, *).
+operation(2, -).
 operation(3, /).
 
-generateOps(OpsSymbols):-
-    length(Ops, 10),
+generateOps(Points, OpsSymbols):-
+    L is Points*2,
+    length(Ops, L),
     domain(Ops, 0, 3),
     labeling([], Ops),
     opsConvert(Ops, OpsSymbols).
+
+generateRandomOps(Points, OpsSymbols):-
+    L is Points*2,
+    length(Ops, L),
+    createRandom(Ops),
+    opsConvert(Ops, OpsSymbols).
+
+createRandom([]).
+createRandom([H | T]):-
+    random(0, 4, H),
+    createRandom(T).
     
 opsConvert([], []).
 opsConvert([HCode | TCodes], [HSymbol | TSymbols]):-
     operation(HCode, HSymbol),
     opsConvert(TCodes, TSymbols).
 
-solveAll:-
-    generateOps(Ops),
-    solve(Ops),
+solveAll(Points, OneSolution):-
+    generateOps(Points, Ops),
+    solveStar(Points, Ops, OneSolution),
     fail.
+solveAll(_, _).
+
+findSolution(Points):-
+    repeat,
+    generateRandomOps(Points, Ops),
+    solveStar(Points, Ops, 1).
 
 restriction(Op1, W, X, Op2, Y, Z):-
     restriction(Op1, W, X, Value),
@@ -38,17 +56,41 @@ restriction(-, X, Y, R):-
     X - Y #= R.
 
 restriction(*, X, Y, R):-
+    X #\= 0,
+    Y #\= 0,
     X * Y #= R.
 
 restriction(/, X, Y, R):-
+    X #\= 0,
+    Y #\= 0,
     R * Y #= X.
 
-findSolution:-
-    repeat,
-    generateOps(Ops),
-    solve(Ops).
+solveStar(3, Ops, OneSolution):-
+    Ops = [O0, O1, O2, O3, O4, O5],
+    Vars = [A, B, C, D, E, F],
+    domain(Vars, 0, 5),
+    all_distinct(Vars),
+    restriction(O0, A, B, O5, E, F),
+    restriction(O2, D, B, O3, C, F),
+    restriction(O4, D, E, O1, C, A),
+    !, labeling([min, middle, up], Vars),
+    print_solution(Vars, Ops),
+    ((OneSolution == 1, !);(OneSolution == 0)).
 
-solve(Ops):-
+solveStar(4, Ops, OneSolution):-
+    Ops = [O0, O1, O2, O3, O4, O5, O6, O7],
+    Vars = [A, B, C, D, E, F, G, H],
+    domain(Vars, 0, 7),
+    all_distinct(Vars),
+    restriction(O6, H, F, O0, B, A),
+    restriction(O1, A, C, O7, G, H),
+    restriction(O2, D, B, O3, C, E),
+    restriction(O4, D, F, O5, G, E),
+    !, labeling([min, middle, up], Vars),
+    print_solution(Vars, Ops),
+    ((OneSolution == 1, !);(OneSolution == 0)).
+
+solveStar(5, Ops, OneSolution):-
     Ops = [O0, O1, O2, O3, O4, O5, O6, O7, O8, O9],
     Vars = [A, B, C, D, E, F, G, H, I, J],
     domain(Vars, 0, 9),
@@ -58,10 +100,30 @@ solve(Ops):-
     restriction(O6, I, F, O0, C, A),
     restriction(O8, I, H, O5, G, E),
     restriction(O1, A, D, O7, G, J),
-    labeling([], Vars),
-    print_solution(Vars, Ops).
+    !, labeling([min, middle, up], Vars),
+    print_solution(Vars, Ops),
+    ((OneSolution == 1, !);(OneSolution == 0)).
+
+solveStar(6, Ops, OneSolution):-
+    Ops = [O0, O1, O2, O3, O4, O5, O6, O7, O8, O9, O10, O11],
+    Vars = [A, B, C, D, E, F, G, H, I, J, K, L],
+    domain(Vars, 0, 11),
+    all_distinct(Vars),
+    restriction(O6, H, F, O0, C, A),
+    restriction(O1, A, D, O7, G, K),
+    restriction(O2, B, C, O3, D, E),
+    restriction(O4, B, F, O10, I, L),
+    restriction(O11, L, J, O5, G, E),
+    restriction(O8, H, I, O9, J, K),
+    !, labeling([min, middle, up], Vars),
+    print_solution(Vars, Ops),
+    ((OneSolution == 1, !);(OneSolution == 0)).
 
 print_solution(Vars, Ops):-
+    print(Ops),
+    print(Vars), nl.
+
+print5(Vars, Ops):-
     Ops = [O0, O1, O2, O3, O4, O5, O6, O7, O8, O9],
     Vars = [A, B, C, D, E, F, G, H, I, J],
     format('~t~d~t~14|', [A]), nl,
