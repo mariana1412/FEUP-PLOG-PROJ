@@ -2,21 +2,19 @@
 :- use_module(library(lists)).
 :- use_module(library(clpfd)).
 
-example(3, [+,-,-,/,-,+]).
-example(4, [/,+,-,-,/,/,+,-]).
-example(5, [+,+,-,-,*,+,/,+,/,+]).
-example(6, [+,/,+,+,+,+,-,-,-,-,-,+]).
-
+%correspondence between the numbers generated and the operators
 operation(0, +).
 operation(1, *).
 operation(2, -).
 operation(3, /).
 
+%generates all lists of operators for a star of Points points, using the Params list in labeling
 generateAllOps(Points, Params):-
     generateOps(Points, _, Params),
     fail.
 generateAllOps(_, _).
 
+%generates a list of Operators for a star of Points points, using the labeling options that produced the fastest processing
 generateOps(Points, OpsSymbols):-
     Points>2,
     Points<7,
@@ -26,6 +24,7 @@ generateOps(Points, OpsSymbols):-
     labeling([leftmost, step, up], Ops),
     opsConvert(Ops, OpsSymbols).
 
+%generates a list of Operators for a star of Points points, using the Params labeling options
 generateOps(Points, OpsSymbols, Params):-
     Points>2,
     Points<7,
@@ -35,6 +34,7 @@ generateOps(Points, OpsSymbols, Params):-
     labeling(Params, Ops),
     opsConvert(Ops, OpsSymbols).
 
+%generates a random list of Operators for a star of Points points
 generateRandomOps(Points, OpsSymbols):-
     Points>2,
     Points<7,
@@ -47,12 +47,14 @@ createRandom([]).
 createRandom([H | T]):-
     random(0, 4, H),
     createRandom(T).
-    
+
+%converts a list of Operator numbers in a list of their respective symbols
 opsConvert([], []).
 opsConvert([HCode | TCodes], [HSymbol | TSymbols]):-
     operation(HCode, HSymbol),
     opsConvert(TCodes, TSymbols).
 
+%generates and solves all possible stars with Points points, using the fastest labeling options for both operator and number restrictions 
 solveAll(Points, OneSolution):-
     Points>2,
     Points<7,
@@ -63,17 +65,18 @@ solveAll(Points, _):-
     Points>2,
     Points<7.
 
+%generates and solves all possible stars with Points points, using Params as the labeling options for numbers
 solveAll(Points, OneSolution, Params):-
     Points>2,
     Points<7,
     generateOps(Points, Ops),
     solveStar(Points, Ops, OneSolution, Params),
     fail.
-
 solveAll(Points, _, _):-
     Points>2,
     Points<7.
 
+%generates a random star of Points points until one solution is found
 findSolution(Points):-
     Points>2,
     Points<7,
@@ -81,26 +84,33 @@ findSolution(Points):-
     generateRandomOps(Points, Ops),
     solveStar(Points, Ops, 1).
 
+%applies each side of the equations' restriction
 restriction(Op1, W, X, Op2, Y, Z):-
     restriction(Op1, W, X, Value),
     restriction(Op2, Y, Z, Value).
 
+%applies addition restriction
 restriction(+, X, Y, R):-
     X + Y #= R.
 
+%applies subtraction restriction 
 restriction(-, X, Y, R):-
     X - Y #= R.
 
+%applies multiplication restriction. In this puzzle, 0s are not compatible in multiplication, because of its zero property
 restriction(*, X, Y, R):-
     X #\= 0,
     Y #\= 0,
     X * Y #= R.
 
+%applies division restriction. It turns the division into a multiplication, since we are dealing with whole numbers. In this puzzle, 0s are not compatible in division
 restriction(/, X, Y, R):-
     X #\= 0,
     Y #\= 0,
     R * Y #= X.
 
+%solves a 3 pointed star with Ops operators, using the fastest labeling options
+%OneSolution determines if finding one solution will suffice, or if every solution has to be found.
 solveStar(3, Ops, OneSolution):-
     Ops = [O0, O1, O2, O3, O4, O5],
     Vars = [A, B, C, D, E, F],
@@ -113,6 +123,8 @@ solveStar(3, Ops, OneSolution):-
     print_solution(Vars, Ops),
     ((OneSolution == 1, !);(OneSolution == 0)).
 
+%solves a 3 pointed star with Ops operators, using the Params as labeling options
+%OneSolution determines if finding one solution will suffice, or if every solution has to be found.
 solveStar(3, Ops, OneSolution, Params):-
     Ops = [O0, O1, O2, O3, O4, O5],
     Vars = [A, B, C, D, E, F],
@@ -125,6 +137,8 @@ solveStar(3, Ops, OneSolution, Params):-
     print_solution(Vars, Ops),
     ((OneSolution == 1, !);(OneSolution == 0)).
 
+%solves a 4 pointed star with Ops operators, using the fastest labeling options
+%OneSolution determines if finding one solution will suffice, or if every solution has to be found.
 solveStar(4, Ops, OneSolution):-
     Ops = [O0, O1, O2, O3, O4, O5, O6, O7],
     Vars = [A, B, C, D, E, F, G, H],
@@ -138,6 +152,8 @@ solveStar(4, Ops, OneSolution):-
     print_solution(Vars, Ops),
     ((OneSolution == 1, !);(OneSolution == 0)).
 
+%solves a 4 pointed star with Ops operators, using the Params as labeling options
+%OneSolution determines if finding one solution will suffice, or if every solution has to be found.
 solveStar(4, Ops, OneSolution, Params):-
     Ops = [O0, O1, O2, O3, O4, O5, O6, O7],
     Vars = [A, B, C, D, E, F, G, H],
@@ -151,6 +167,8 @@ solveStar(4, Ops, OneSolution, Params):-
     print_solution(Vars, Ops),
     ((OneSolution == 1, !);(OneSolution == 0)).
 
+%solves a 5 pointed star with Ops operators, using the fastest labeling options
+%OneSolution determines if finding one solution will suffice, or if every solution has to be found.
 solveStar(5, Ops, OneSolution):-
     Ops = [O0, O1, O2, O3, O4, O5, O6, O7, O8, O9],
     Vars = [A, B, C, D, E, F, G, H, I, J],
@@ -166,6 +184,8 @@ solveStar(5, Ops, OneSolution):-
     print5(Vars, Ops), nl,
     ((OneSolution == 1, !);(OneSolution == 0)).
 
+%solves a 5 pointed star with Ops operators, using the Params as labeling options
+%OneSolution determines if finding one solution will suffice, or if every solution has to be found.
 solveStar(5, Ops, OneSolution, Params):-
     Ops = [O0, O1, O2, O3, O4, O5, O6, O7, O8, O9],
     Vars = [A, B, C, D, E, F, G, H, I, J],
@@ -180,6 +200,8 @@ solveStar(5, Ops, OneSolution, Params):-
     print_solution(Vars, Ops),
     ((OneSolution == 1, !);(OneSolution == 0)).
 
+%solves a 6 pointed star with Ops operators, using the fastest labeling options
+%OneSolution determines if finding one solution will suffice, or if every solution has to be found.
 solveStar(6, Ops, OneSolution):-
     Ops = [O0, O1, O2, O3, O4, O5, O6, O7, O8, O9, O10, O11],
     Vars = [A, B, C, D, E, F, G, H, I, J, K, L],
@@ -195,6 +217,8 @@ solveStar(6, Ops, OneSolution):-
     print_solution(Vars, Ops),
     ((OneSolution == 1, !);(OneSolution == 0)).
 
+%solves a 6 pointed star with Ops operators, using the Params as labeling options
+%OneSolution determines if finding one solution will suffice, or if every solution has to be found.
 solveStar(6, Ops, OneSolution, Params):-
     Ops = [O0, O1, O2, O3, O4, O5, O6, O7, O8, O9, O10, O11],
     Vars = [A, B, C, D, E, F, G, H, I, J, K, L],
@@ -210,10 +234,12 @@ solveStar(6, Ops, OneSolution, Params):-
     print_solution(Vars, Ops),
     ((OneSolution == 1, !);(OneSolution == 0)).
 
+%prints a list of operators and a corresponding solution, also in a list
 print_solution(Vars, Ops):-
     print(Ops),
     print(Vars), nl.
 
+%prints the solutions for a 5 pointed star, in a star disposition
 print5(Vars, Ops):-
     Ops = [O0, O1, O2, O3, O4, O5, O6, O7, O8, O9],
     Vars = [A, B, C, D, E, F, G, H, I, J],
@@ -227,12 +253,14 @@ print5(Vars, Ops):-
     format('~2|~t~w~t~w~t~12|', [O8, O9]), nl,
     format('~t~d~t~2|~12|~t~d~t~14|', [I, J]), nl.
 
+%generates a list to be used as labeling options
 generateSearch(Params):-
     search1(X),
     search2(Y),
     search3(Z),
     Params = [X, Y, Z].
 
+%labeling options
 search1(leftmost).
 search1(min).
 search1(max).
@@ -249,6 +277,7 @@ search2(middle).
 search3(up).
 search3(down).
 
+%generates all possible lists of operators for a 5 pointed star, using all possible labeling options
 testSearchOps:-
     generateSearch(Params),
     statistics(runtime, [TI | _]),
@@ -259,6 +288,7 @@ testSearchOps:-
     fail.
 testSearchOps.
 
+%generates all possible lists of operators that have are solvable for a Points pointed star, using all possible labeling options
 testSearchStars(Points, OneSolution):-
     Points>2,
     Points<7,
@@ -272,6 +302,7 @@ testSearchStars(Points, _):-
     Points>2,
     Points<7.
 
+%generates the path to the log file correspondent to the labeling options combination, for the finding all possible 5 pointed stars and one of their solutions test
 getFileHeuristicsStar([S1, S2, S3], Path):-
     atom_concat('docs/logs/', S1, P1),
     atom_concat(P1, '/', P2),
@@ -281,6 +312,7 @@ getFileHeuristicsStar([S1, S2, S3], Path):-
     atom_concat(P5, '/5points.txt', Path).
 
 
+%generates the path to the log file correspondent to the labeling options combination, for the generating all possible 5 pointed stars test
 getFileHeuristicsOps([S1, S2, S3], Path):-
     atom_concat('docs/logs/', S1, P1),
     atom_concat(P1, '/', P2),
@@ -289,18 +321,21 @@ getFileHeuristicsOps([S1, S2, S3], Path):-
     atom_concat(P4, S3, P5),
     atom_concat(P5, '/ops.txt', Path).
 
+%generates the path to the log file correspondent to all possible Points pointed stars that are solvable and all their solutions
 getFilePoints(Points, 0, Path):-
     number_chars(Points, PArray),
     atom_chars(P0, PArray),
     atom_concat('docs/logs/', P0, P1),
     atom_concat(P1, '_points/all.txt', Path).
 
+%generates the path to the log file correspondent to all possible Points pointed stars that are solvable and one of their solutions
 getFilePoints(Points, 1, Path):-
     number_chars(Points, PArray),
     atom_chars(P0, PArray),
     atom_concat('docs/logs/', P0, P1),
     atom_concat(P1, '_points/one.txt', Path).
 
+%saves the finding all possible 5 pointed stars and one of their solutions test results in the logs
 saveLogsHeuristicsStar:-
     generateSearch(Params),
 
@@ -322,6 +357,7 @@ saveLogsHeuristicsStar:-
     fail.
 saveLogsHeuristicsStar.
 
+%saves the generating all possible 5 pointed stars test results in the logs
 saveLogsOps:-
     generateSearch(Params),
 
@@ -348,6 +384,8 @@ points(4).
 points(5).
 points(6).
 
+%finds all possible Points pointed stars that are solvable and all their solutions and saves the results in their logs.
+%repeats, but only finding one solution for each solvable star
 saveLogsPoints:-
     points(Points),
 
