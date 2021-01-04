@@ -69,6 +69,7 @@ solveAll(Points, OneSolution, Params):-
     generateOps(Points, Ops),
     solveStar(Points, Ops, OneSolution, Params),
     fail.
+
 solveAll(Points, _, _):-
     Points>2,
     Points<7.
@@ -161,7 +162,8 @@ solveStar(5, Ops, OneSolution):-
     restriction(O8, I, H, O5, G, E),
     restriction(O1, A, D, O7, G, J),
     !, labeling([min, middle, up], Vars),
-    print_solution(Vars, Ops),
+    nl, print_solution(Vars, Ops),
+    print5(Vars, Ops), nl,
     ((OneSolution == 1, !);(OneSolution == 0)).
 
 solveStar(5, Ops, OneSolution, Params):-
@@ -354,7 +356,6 @@ saveLogsPoints:-
     current_output(Console),
     set_output(S),
     
-
     statistics(walltime, _),
     solveAll(Points, 0),
     statistics(walltime, [_|T]),
@@ -364,12 +365,10 @@ saveLogsPoints:-
     set_output(Console),
     format('~d Points, all solutions took ~3d seconds', [Points, T]), nl,
 
-
     getFilePoints(Points, 1, Path1),
     open(Path1, write, S1),
     current_output(Console),
     set_output(S1),
-    
 
     statistics(walltime, _),
     solveAll(Points, 1),
