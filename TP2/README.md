@@ -21,6 +21,7 @@
 ### Execução
 
 Primeiro é necessário:
+
 * Executar SICStus Prolog;
 * Ir para `File > Consult` e selecionar o ficheiro [main.pl](main.pl)
 * *Alternativamente*: escrever na consola `consult('path\to\main.pl')`.
